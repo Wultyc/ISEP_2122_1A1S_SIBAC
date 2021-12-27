@@ -1,6 +1,6 @@
-package org.engcia.model;
+package pt.ipp.isep.dei.model;
 
-import org.engcia.haemorrhage.Haemorrhage;
+import pt.ipp.isep.dei.haemorrhage.Haemorrhage;
 
 public class Hypothesis extends Fact{
     private String description;

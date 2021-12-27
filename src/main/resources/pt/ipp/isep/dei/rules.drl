@@ -15,12 +15,12 @@
 
 package org.engcia;
 
-import org.engcia.model.Evidence;
-import org.engcia.model.Hypothesis;
-import org.engcia.model.Conclusion;
-import org.engcia.model.Fact;
+import pt.ipp.isep.dei.model.Evidence;
+import pt.ipp.isep.dei.model.Hypothesis;
+import pt.ipp.isep.dei.model.Conclusion;
+import pt.ipp.isep.dei.model.Fact;
 
-import function org.engcia.view.UI.answer;
+import function pt.ipp.isep.dei.view.UI.answer;
 
 query "Conclusions"
 	$conclusion : Conclusion()

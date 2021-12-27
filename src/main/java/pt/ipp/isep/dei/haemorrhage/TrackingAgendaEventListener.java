@@ -1,4 +1,4 @@
-package org.engcia.haemorrhage;
+package pt.ipp.isep.dei.haemorrhage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,10 @@ import java.util.Map;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.runtime.rule.Match;
 
-import org.engcia.model.Fact;
-import org.engcia.model.Justification;
+import pt.ipp.isep.dei.model.Fact;
+import pt.ipp.isep.dei.model.Justification;
 
 @SuppressWarnings("restriction")
 public class TrackingAgendaEventListener extends DefaultAgendaEventListener{

@@ -1,10 +1,10 @@
-package org.engcia.haemorrhage;
+package pt.ipp.isep.dei.haemorrhage;
 
 import java.util.Map;
 
-import org.engcia.model.Fact;
-import org.engcia.model.Hypothesis;
-import org.engcia.model.Justification;
+import pt.ipp.isep.dei.model.Fact;
+import pt.ipp.isep.dei.model.Hypothesis;
+import pt.ipp.isep.dei.model.Justification;
 
 public class How {
     private Map<Integer, Justification> justifications;

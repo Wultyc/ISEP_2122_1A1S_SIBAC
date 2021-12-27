@@ -1,4 +1,4 @@
-package org.engcia.view;
+package pt.ipp.isep.dei.view;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,8 +7,8 @@ import java.util.Collection;
 
 import org.kie.api.runtime.ClassObjectFilter;
 
-import org.engcia.haemorrhage.Haemorrhage;
-import org.engcia.model.Evidence;
+import pt.ipp.isep.dei.haemorrhage.Haemorrhage;
+import pt.ipp.isep.dei.model.Evidence;
 
 public class UI {
     private static BufferedReader br;

@@ -1,4 +1,4 @@
-package org.engcia.model;
+package pt.ipp.isep.dei.model;
 
 public class Evidence extends Fact{
     public static final String BLOOD_EAR = "There is blood in the ear";

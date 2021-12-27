@@ -1,6 +1,6 @@
-package org.engcia.model;
+package pt.ipp.isep.dei.model;
 
-import org.engcia.haemorrhage.Haemorrhage;
+import pt.ipp.isep.dei.haemorrhage.Haemorrhage;
 
 public class Conclusion extends Fact{
     public static final String OTORRHAGIA = "Otorrhagia";

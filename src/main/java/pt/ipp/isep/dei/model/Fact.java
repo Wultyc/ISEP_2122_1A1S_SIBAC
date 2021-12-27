@@ -1,4 +1,4 @@
-package org.engcia.model;
+package pt.ipp.isep.dei.model;
 
 public class Fact {
     static private int lastId = 0;

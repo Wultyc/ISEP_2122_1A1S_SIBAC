@@ -1,26 +1,19 @@
-package org.engcia.haemorrhage;
+package pt.ipp.isep.dei.haemorrhage;
 
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.kie.api.KieServices;
-import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 
-import org.engcia.model.Conclusion;
-import org.engcia.model.Evidence;
-import org.engcia.model.Fact;
-import org.engcia.model.Justification;
-import org.engcia.view.UI;
+import pt.ipp.isep.dei.model.Conclusion;
+import pt.ipp.isep.dei.model.Justification;
+import pt.ipp.isep.dei.view.UI;
 
 public class Haemorrhage {
     public static KieSession KS;

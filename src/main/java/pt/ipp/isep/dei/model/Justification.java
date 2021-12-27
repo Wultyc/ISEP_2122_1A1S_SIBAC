@@ -1,4 +1,4 @@
-package org.engcia.model;
+package pt.ipp.isep.dei.model;
 
 import java.util.ArrayList;
 import java.util.List;
