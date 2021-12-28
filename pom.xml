@@ -12,9 +12,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <drools-version>7.44.0.Final</drools-version>
-    <slf4j-version>1.7.26</slf4j-version>
-    <junit-version>4.12</junit-version>
+    <drools-version>7.63.0.Final</drools-version>
+    <slf4j-version>1.7.32</slf4j-version>
+    <junit-version>4.13.2</junit-version>
   </properties>
 
   <dependencyManagement>
@@ -42,7 +42,11 @@
       <version>${drools-version}</version>
       <scope>compile</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-mvel</artifactId>
+      <version>${drools-version}</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
