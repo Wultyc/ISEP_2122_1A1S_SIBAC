@@ -7,7 +7,7 @@ import java.util.Collection;
 
 import org.kie.api.runtime.ClassObjectFilter;
 
-import pt.ipp.isep.dei.haemorrhage.Haemorrhage;
+import pt.ipp.isep.dei.tbjStatus.TBJ_Status;
 import pt.ipp.isep.dei.model.Evidence;
 
 public class UI {
@@ -29,7 +29,7 @@ public class UI {
 
     public static boolean answer(String ev, String v) {
         @SuppressWarnings("unchecked")
-        Collection<Evidence> evidences = (Collection<Evidence>) Haemorrhage.KS.getObjects(new ClassObjectFilter(Evidence.class));
+        Collection<Evidence> evidences = (Collection<Evidence>) TBJ_Status.KS.getObjects(new ClassObjectFilter(Evidence.class));
         boolean questionFound = false;
         Evidence evidence = null;
         for (Evidence e: evidences) {
@@ -41,7 +41,7 @@ public class UI {
         }
         if (questionFound) {
             if (evidence.getValue().compareTo(v) == 0) {
-                Haemorrhage.agendaEventListener.addLhs(evidence);
+                TBJ_Status.agendaEventListener.addLhs(evidence);
                 return true;
             } else {
                 return false;
@@ -51,10 +51,10 @@ public class UI {
         String value = readLine();
 
         Evidence e = new Evidence(ev, value);
-        Haemorrhage.KS.insert(e);
+        TBJ_Status.KS.insert(e);
 
         if (value.compareTo(v) == 0) {
-            Haemorrhage.agendaEventListener.addLhs(e);
+            TBJ_Status.agendaEventListener.addLhs(e);
             return true;
         } else {
             return false;

@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.engcia;
+package pt.ipp.isep.dei;
 
 import pt.ipp.isep.dei.model.Evidence;
 import pt.ipp.isep.dei.model.Hypothesis;

@@ -1,4 +1,4 @@
-package pt.ipp.isep.dei.haemorrhage;
+package pt.ipp.isep.dei.tbjStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ public class TrackingAgendaEventListener extends DefaultAgendaEventListener{
         for (Fact f: rhs) {
             //System.out.println(f.getId() + ":" + f);
             Justification j = new Justification(ruleName, lhs, f);
-            Haemorrhage.justifications.put(f.getId(), j);
+            TBJ_Status.justifications.put(f.getId(), j);
         }
 
         resetLhs();

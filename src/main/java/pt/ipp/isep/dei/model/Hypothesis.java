@@ -1,6 +1,6 @@
 package pt.ipp.isep.dei.model;
 
-import pt.ipp.isep.dei.haemorrhage.Haemorrhage;
+import pt.ipp.isep.dei.tbjStatus.TBJ_Status;
 
 public class Hypothesis extends Fact{
     private String description;
@@ -9,7 +9,7 @@ public class Hypothesis extends Fact{
     public Hypothesis(String description, String value) {
         this.description = description;
         this.value = value;
-        Haemorrhage.agendaEventListener.addRhs(this);
+        TBJ_Status.agendaEventListener.addRhs(this);
     }
 
     public String getDescription() {

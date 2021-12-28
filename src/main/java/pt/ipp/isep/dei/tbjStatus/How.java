@@ -1,4 +1,4 @@
-package pt.ipp.isep.dei.haemorrhage;
+package pt.ipp.isep.dei.tbjStatus;
 
 import java.util.Map;
 

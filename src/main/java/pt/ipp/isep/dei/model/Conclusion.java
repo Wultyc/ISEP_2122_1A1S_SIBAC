@@ -1,6 +1,6 @@
 package pt.ipp.isep.dei.model;
 
-import pt.ipp.isep.dei.haemorrhage.Haemorrhage;
+import pt.ipp.isep.dei.tbjStatus.TBJ_Status;
 
 public class Conclusion extends Fact{
     public static final String OTORRHAGIA = "Otorrhagia";
@@ -18,7 +18,7 @@ public class Conclusion extends Fact{
 
     public Conclusion(String description) {
         this.description = description;
-        Haemorrhage.agendaEventListener.addRhs(this);
+        TBJ_Status.agendaEventListener.addRhs(this);
     }
 
     public String getDescription() {

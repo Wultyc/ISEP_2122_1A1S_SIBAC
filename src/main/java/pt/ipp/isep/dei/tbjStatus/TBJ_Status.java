@@ -1,4 +1,4 @@
-package pt.ipp.isep.dei.haemorrhage;
+package pt.ipp.isep.dei.tbjStatus;
 
 import java.io.BufferedReader;
 import java.util.Map;
@@ -15,7 +15,7 @@ import pt.ipp.isep.dei.model.Conclusion;
 import pt.ipp.isep.dei.model.Justification;
 import pt.ipp.isep.dei.view.UI;
 
-public class Haemorrhage {
+public class TBJ_Status {
     public static KieSession KS;
     public static BufferedReader BR;
     public static TrackingAgendaEventListener agendaEventListener;
@@ -29,14 +29,14 @@ public class Haemorrhage {
 
     private static void runEngine() {
         try {
-            Haemorrhage.justifications = new TreeMap<Integer, Justification>();
+            TBJ_Status.justifications = new TreeMap<Integer, Justification>();
 
             // load up the knowledge base
             KieServices ks = KieServices.Factory.get();
             KieContainer kContainer = ks.getKieClasspathContainer();
             final KieSession kSession = kContainer.newKieSession("ksession-rules");
-            Haemorrhage.KS = kSession;
-            Haemorrhage.agendaEventListener = new TrackingAgendaEventListener();
+            TBJ_Status.KS = kSession;
+            TBJ_Status.agendaEventListener = new TrackingAgendaEventListener();
             kSession.addEventListener(agendaEventListener);
 
             // Query listener
@@ -50,8 +50,8 @@ public class Haemorrhage {
                     Conclusion conclusion = (Conclusion) row.get("$conclusion");
                     System.out.println(">>>" + conclusion.toString());
 
-                    //System.out.println(Haemorrhage.justifications);
-                    How how = new How(Haemorrhage.justifications);
+                    //System.out.println(TBJ_Status.justifications);
+                    How how = new How(TBJ_Status.justifications);
                     System.out.println(how.getHowExplanation(conclusion.getId()));
 
                     // stop inference engine after as soon as got a conclusion
