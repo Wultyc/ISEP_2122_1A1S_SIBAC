@@ -1,6 +1,7 @@
 package pt.ipp.isep.dei.tbjStatus;
 
 import java.io.BufferedReader;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -11,6 +12,7 @@ import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 
+import pt.ipp.isep.dei.math.Multiplier;
 import pt.ipp.isep.dei.model.Conclusion;
 import pt.ipp.isep.dei.model.Justification;
 import pt.ipp.isep.dei.view.UI;
@@ -22,6 +24,9 @@ public class TBJ_Status {
     public static Map<Integer, Justification> justifications;
 
     public static final void main(String[] args) {
+
+        List<Multiplier> listOfMultipiers = Multiplier.getDefaultListOfMultipiers();
+
         UI.uiInit();
         runEngine();
         UI.uiClose();
