@@ -4,7 +4,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum Units {
-    A,V,Ω,W;
+    NA,A,V,Ω,W;
 
     public static String getList(){
         return Stream.of(Units.values()).

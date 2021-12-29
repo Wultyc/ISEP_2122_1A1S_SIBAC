@@ -53,40 +53,38 @@ public class UI {
         }
 
         // Value not found. Need to ask the user for it
-        if (!questionFound) {
-
-            //Ask for the value
-            System.out.print(ev + ": ");
-            Double value = Double.parseDouble(readLine());
-
-            //Ask for the multiplier
-            List<Multiplier> listOfMultipiers = Multiplier.getDefaultListOfMultipiers();
-            String multipliersList = "";
-            for(Multiplier m : listOfMultipiers){
-                multipliersList += m.getPrefix() + " ";
-            }
-
-            String multiplierStr = readLine();
-            Multiplier multiplier = new Multiplier();
-
-            System.out.println("Choose one multiplier: " + multipliersList);
-            for(Multiplier m : listOfMultipiers){
-                if(m.getPrefix().equalsIgnoreCase(multiplierStr)){
-                    multiplier = m;
-                    break;
-                }
-            }
-
-            //Create a evidence Object and store it in the work memory
-            NumericValue nv = new NumericValue(value, unit, multiplier);
-            Evidence e = new Evidence(ev, nv.getToHuman(), nv);
-            TBJ_Status.KS.insert(e);
-
+        if (questionFound) {
+            return;
         }
 
-    }
+        //Ask for the value
+        System.out.print(ev + ": ");
+        Double value = Double.parseDouble(readLine());
 
-    public static void chooseHypothesis(){
+        //Ask for the multiplier
+        List<Multiplier> listOfMultipiers = Multiplier.getDefaultListOfMultipiers();
+        String multipliersList = "";
+        for(Multiplier m : listOfMultipiers){
+            multipliersList += m.getPrefix() + " ("+ m.getSymbol() +")" + " ";
+        }
+
+        System.out.println("Choose one multiplier: " + multipliersList);
+        System.out.println("If the value is in Fundamental Unit, send it blank");
+        String multiplierStr = readLine();
+
+        Multiplier multiplier = new Multiplier();
+
+        for(Multiplier m : listOfMultipiers){
+            if(m.getPrefix().equalsIgnoreCase(multiplierStr) || m.getSymbol().equalsIgnoreCase(multiplierStr)){
+                multiplier = m;
+                break;
+            }
+        }
+
+        //Create a evidence Object and store it in the work memory
+        NumericValue nv = (unit == null) ? new NumericValue(value, multiplier) : new NumericValue(value, unit, multiplier);;
+        Evidence e = new Evidence(ev, nv.getToHuman(), nv);
+        TBJ_Status.KS.insert(e);
 
     }
 

@@ -15,128 +15,71 @@
 
 package pt.ipp.isep.dei;
 
-import pt.ipp.isep.dei.model.Evidence;
-import pt.ipp.isep.dei.model.Hypothesis;
-import pt.ipp.isep.dei.model.Conclusion;
-import pt.ipp.isep.dei.model.Fact;
+import pt.ipp.isep.dei.model.*;
+import pt.ipp.isep.dei.math.*;
 
-import function pt.ipp.isep.dei.view.UI.answer;
+import function pt.ipp.isep.dei.view.UI.*;
 
 query "Conclusions"
 	$conclusion : Conclusion()
 end
 
-rule "r1"
+rule "setup"
 	when
-		eval(answer(Evidence.BLOOD_EAR, "yes" ))
+		not Evidence()
 	then
-		Hypothesis h = new Hypothesis("haemorrhage", "upper type");
-		insert(h);
+
+	    //Ask the values
+		//askValue(Evidence.RC, Units.Ω);
+		//askValue(Evidence.RE, Units.Ω);
+		//askValue(Evidence.RB, Units.Ω);
+		//askValue(Evidence.VCE, Units.V);
+		//askValue(Evidence.VBE, Units.V);
+		//askValue(Evidence.VBB, Units.V);
+		//askValue(Evidence.VCC, Units.V);
+		//askValue(Evidence.IB, Units.A);
+		//askValue(Evidence.IC, Units.A);
+		//askValue(Evidence.BJT_GAIN, null);
+
+		//Set application mode
+		answer(Evidence.ENABLE_GUIDED_MODE, "yes");
+
+		//Set params
+		NumericValue nv_Vce_on = new NumericValue(0.7,Units.V,new Multiplier("Fundamental Unit", "","", 1));
+        Evidence e_Vce_on = new Evidence(Evidence.VCE_ON, nv_Vce_on.getToHuman(), nv_Vce_on);
+
+        //Set Hypothesis
+        insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_ACTIVE));
+        insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER));
+        insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_SATURATION));
 end
 
-rule "r2"
+rule "GM_R1: Enable Active Zone hypothesis"
 	when
-		eval(answer(Evidence.BLOOD_EAR, "no" ))
+		eval(answer(Evidence.ENABLE_GUIDED_MODE, "yes"))
+		$hypothesis : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Proposed)
 	then
-		Hypothesis h = new Hypothesis("haemorrhage", "lower type");
-		insert(h);
+		System.out.println("test cut over zone");
 end
 
-rule "r3"
+rule "GM_R2: Test Active Zone hypothesis"
 	when
-		Hypothesis( description == "haemorrhage", value == "upper type")
-		eval(answer(Evidence.EARACHE, "yes"))
+		eval(answer(Evidence.ENABLE_GUIDED_MODE, "yes"))
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Rejected)
+		$hypothesis : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, status == Status.Proposed)
 	then
-		Conclusion c = new Conclusion(Conclusion.OTORRHAGIA);
-		insert(c);
+		System.out.println("test active zone");
 end
 
-rule "r4"
+rule "GM_R3: Conclude its Saturation Zone"
 	when
-		Hypothesis( description == "haemorrhage", value == "upper type")
-		eval(answer(Evidence.DEAFNESS, "yes"))
+		eval(answer(Evidence.ENABLE_GUIDED_MODE, "yes"))
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Rejected)
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, status == Status.Rejected)
 	then
-		Conclusion c = new Conclusion(Conclusion.OTORRHAGIA);
-		insert(c);
+		System.out.println("conclude saturation zone");
 end
 
-rule "r5"
-	when
-		Hypothesis( description == "haemorrhage", value == "upper type")
-		eval(answer(Evidence.CEREBROSPINAL, "yes"))
-	then
-		Conclusion c = new Conclusion(Conclusion.SKULL_FRACTURE);
-		insert(c);
-end
-
-rule "r6"
-	when
-		Hypothesis( description == "haemorrhage", value == "lower type")
-		eval(answer(Evidence.BLOOD_NOSE, "yes"))
-	then
-		Conclusion c = new Conclusion(Conclusion.EPISTAXE);
-		insert(c);
-end
-
-rule "r7"
-	when
-		Hypothesis( description == "haemorrhage", value == "lower type")
-		eval(answer(Evidence.BLOOD_MOUTH, "yes"))
-		eval(answer(Evidence.BLOOD_BROWN, "yes"))
-		eval(answer(Evidence.VOMITING, "yes"))
-	then
-		Conclusion c = new Conclusion(Conclusion.HEMATHESE);
-		insert(c);
-end
-
-rule "r8"
-	when
-		Hypothesis( description == "haemorrhage", value == "lower type")
-		eval(answer(Evidence.BLOOD_MOUTH, "yes"))
-		eval(answer(Evidence.BLOOD_BROWN, "no"))
-		eval(answer(Evidence.VOMITING, "no"))
-	then
-		Conclusion c = new Conclusion(Conclusion.MOUTH_HAEMORRHAGE);
-		insert(c);
-end
-
-rule "r9"
-	when
-		Hypothesis( description == "haemorrhage", value == "lower type")
-		eval(answer(Evidence.BLOOD_VAGINA, "yes"))
-	then
-		Conclusion c = new Conclusion(Conclusion.METRORRHAGIA);
-		insert(c);
-end
-
-rule "r10"
-	when
-		Hypothesis( description == "haemorrhage", value == "lower type")
-		eval(answer(Evidence.BLOOD_PENIS, "yes"))
-	then
-		Conclusion c = new Conclusion(Conclusion.HEMATURIA);
-		insert(c);
-end
-
-rule "r11"
-	when
-		Hypothesis( description == "haemorrhage", value == "lower type")
-		eval(answer(Evidence.BLOOD_ANUS, "yes"))
-		eval(answer(Evidence.BLOOD_COFFEE, "yes"))
-	then
-		Conclusion c = new Conclusion(Conclusion.MELENA);
-		insert(c);
-end
-
-rule "r12"
-	when
-		Hypothesis( description == "haemorrhage", value == "lower type")
-		eval(answer(Evidence.BLOOD_ANUS, "yes"))
-		eval(answer(Evidence.BLOOD_COFFEE, "no"))
-	then
-		Conclusion c = new Conclusion(Conclusion.RECTAL_BLEEDING);
-		insert(c);
-end
 
 rule "unknown"
 	when

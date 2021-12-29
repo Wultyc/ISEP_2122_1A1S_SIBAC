@@ -9,7 +9,12 @@ public class NumericValue {
     private Multiplier multiplier;
 
     public NumericValue(double value, Units unit, Multiplier multiplier) {
+        this.value = value;
         this.unit = unit;
+        this.multiplier = multiplier;
+    }
+
+    public NumericValue(double value, Multiplier multiplier) {
         this.value = value;
         this.multiplier = multiplier;
     }
@@ -31,8 +36,12 @@ public class NumericValue {
      * Return the numeric value in human readable format. e.g 10 mV
      * @return numeric value in human readable format
      */
-    public String getToHuman(){
-        return value*multiplier.getBase10Power() + " " + multiplier.getSymbol() + unit.toString();
+    public String getValueToHuman(){
+        return value + " " + multiplier.getSymbol() + ((unit == null) ? "" : unit.toString());
+    }
+
+    public double getValueToMachine(){
+        return value * multiplier.getBase10Power();
     }
 
 }
