@@ -1,27 +1,49 @@
 package pt.ipp.isep.dei.repository;
 
-import pt.ipp.isep.dei.model.helpers.Multiplier;
-import pt.ipp.isep.dei.model.helpers.Units;
-import pt.ipp.isep.dei.model.helpers.NumericValue;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.util.List;
+
+import org.kie.api.runtime.KieSession;
+
+import pt.ipp.isep.dei.kbs.TrackingAgendaEventListener;
+import pt.ipp.isep.dei.model.*;
+import pt.ipp.isep.dei.model.helpers.*;
 
 public class ConsoleApp implements iRepository{
 
+    private KieSession KS;
+    private TrackingAgendaEventListener agendaEventListener;
+
     private BufferedReader br;
-    private List<Multiplier> listOfMultipiers;
+    private List<Multiplier> listOfMultipliers;
     private Multiplier fundamentalUnitMultiplier;
-    private String listOfMultipiersStr;
+    private String listOfMultipliersStr;
+
+    private final String breakOutLine;
 
     public ConsoleApp(){
-        br = new BufferedReader(new InputStreamReader(System.in));
-        this.listOfMultipiers = Multiplier.getDefaultListOfMultipiers();
-        this.listOfMultipiersStr = this.setListOfMultipiersStr();
+        this.breakOutLine = new String(new char[100]).replace("\0", "=");
     }
 
+    /** Initiates the objects required for this repository to work properly
+     * @param KS
+     * @param agendaEventListener
+     */
+    public void init(KieSession KS, TrackingAgendaEventListener agendaEventListener){
+        br = new BufferedReader(new InputStreamReader(System.in));
+        this.listOfMultipliers = Multiplier.getDefaultListOfMultipliers();
+        this.listOfMultipliersStr = this.processListOfMultipliers();
+
+        this.KS = KS;
+        this.agendaEventListener = agendaEventListener;
+    }
+
+    /**
+     * Closes this object live connections
+     */
     @Override
     public void close() {
         if (br != null) {
@@ -33,32 +55,111 @@ public class ConsoleApp implements iRepository{
         }
     }
 
+    /**
+     * Load values into Work Memory
+     */
     @Override
     public void loadWorkMemory(){
+        //Load parameters
+        NumericValue nv_vb_on = new NumericValue(new BigDecimal("0.7"),this.fundamentalUnitMultiplier,Units.V);
+        Evidence e_vb_on = new Evidence(Evidence.VBE_ON,nv_vb_on.getValueToHuman(), nv_vb_on);
+        this.KS.insert(e_vb_on);
+
+        //Load preferences
+        this.KS.insert(insertNewPreference(Preference.ENABLE_GUIDED_MODE, true));
+
+        //Load default hypothesis
+        this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_ACTIVE));
+        this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER));
+        this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_SATURATION));
+
+        //Load values from problem
+        this.KS.insert(insertNewEvidence(Evidence.RC, true, Units.Ω));
+        this.KS.insert(insertNewEvidence(Evidence.RE, true, Units.Ω));
+        this.KS.insert(insertNewEvidence(Evidence.RBB, true, Units.Ω));
+        this.KS.insert(insertNewEvidence(Evidence.VCE, true, Units.V));
+        this.KS.insert(insertNewEvidence(Evidence.VBE, true, Units.V));
+        this.KS.insert(insertNewEvidence(Evidence.VBB, true, Units.V));
+        this.KS.insert(insertNewEvidence(Evidence.VCC, true, Units.V));
+        this.KS.insert(insertNewEvidence(Evidence.IB, true, Units.A));
+        this.KS.insert(insertNewEvidence(Evidence.IC, true, Units.A));
+        this.KS.insert(insertNewEvidence(Evidence.BJT_GAIN, true, null));
 
     }
 
+    /**
+     * Creates new evidence in case it is not defined in Work Memory
+     * @param ev evidence from Evidence class
+     * @param isNumeric defines if its a numeric evidence
+     * @param u unit of this evidence if applied
+     * @return evidence if needs to be created
+     */
+    public Evidence insertNewEvidence(String ev, boolean isNumeric, Units u){
+        Evidence evidence;
+
+        if(isNumeric) {
+            NumericValue nv = readNumericValueFromConsole(ev, u);
+            evidence = new Evidence(ev, nv.getValueToHuman(), nv);
+        } else {
+            String value = readFromConsole(ev);
+            evidence = new Evidence(ev, value);
+        }
+
+        System.out.println(evidence.toString());
+        System.out.println(this.breakOutLine);
+
+        return evidence;
+    }
+
+    /**
+     * Creates new preference in case it is not defined in Work Memory
+     * @param pref preference from Preference class
+     * @param isYesOrNo defines if its a yes/no evidence
+     * @return preference if needs to be created
+     */
+    public Preference insertNewPreference(String pref, boolean isYesOrNo){
+
+        String value = (isYesOrNo) ? readYesOrNoFromConsole(pref) : readFromConsole(pref);
+        Preference preference = new Preference(pref, value);
+
+        System.out.println(preference.toString());
+        System.out.println(this.breakOutLine);
+
+        return preference;
+    }
+
+    /**
+     * Reads a Numeric value from console
+     * @param message message to be presented to the user
+     * @param unit unit of measurement of this numeric value. If none, send null
+     * @return NumericValue object
+     */
     public NumericValue readNumericValueFromConsole(String message, Units unit){
 
-        Double value = readDoubleFromConsole(message);
+        BigDecimal value = readDoubleFromConsole(message);
         Multiplier multiplier = readMultiplierFromFromConsole();
 
         NumericValue nv = (unit == null)
                             ? new NumericValue(value, multiplier)
-                            : new NumericValue(value, unit, multiplier);
+                            : new NumericValue(value, multiplier, unit);
 
         return nv;
     }
 
-    public Double readDoubleFromConsole(String message){
+    /**
+     * Reads a double from console
+     * @param message message to be presented to the user
+     * @return number in double format
+     */
+    public BigDecimal readDoubleFromConsole(String message){
         boolean keepLoop = true;
-        Double value = 0.0;
+        BigDecimal value = new BigDecimal("0");
         String valueStr = "";
 
         while (keepLoop){
             try {
                 valueStr = readFromConsole(message);
-                value = Double.parseDouble(valueStr);
+                value = new BigDecimal(valueStr);
                 keepLoop = false;
             } catch (NumberFormatException e){
                 System.out.println("Invalid value!! Please insert a valid number");
@@ -68,6 +169,10 @@ public class ConsoleApp implements iRepository{
         return value;
     }
 
+    /**
+     * Shows a list of multipliers on console and asks user to select one
+     * @return multiplier object equivalent to the multiplier user choose
+     */
     public Multiplier readMultiplierFromFromConsole(){
         boolean keepLoop = true;
         int searchId = -1;
@@ -75,7 +180,7 @@ public class ConsoleApp implements iRepository{
         Multiplier multiplier = fundamentalUnitMultiplier;
 
         System.out.println("Select one element from bellow list");
-        System.out.println(this.listOfMultipiersStr);
+        System.out.println(this.listOfMultipliersStr);
         System.out.println("You can insert either the name or the symbol");
         System.out.println("If you dont what to send a multiplier, send it blank");
         while (keepLoop){
@@ -88,10 +193,10 @@ public class ConsoleApp implements iRepository{
             }
 
             //Search for the chosen multiplier
-            for(Multiplier m : listOfMultipiers){
+            for(Multiplier m : listOfMultipliers){
                 searchId++;
                 if(m.getPrefix().equalsIgnoreCase(value) || m.getSymbol().equals(value)){
-                    multiplier = listOfMultipiers.get(searchId);
+                    multiplier = listOfMultipliers.get(searchId);
                     keepLoop = false;
                     break;
                 }
@@ -107,13 +212,25 @@ public class ConsoleApp implements iRepository{
         return multiplier;
     }
 
+    /**
+     * Reads an Yes or No response from console. If the value is invalid, NO will be assumed
+     * @param message message to be presented to the user
+     * @return YES or NO strings
+     */
     public String readYesOrNoFromConsole(String message){
         String input = readFromConsole(message).toUpperCase();
         return (input.equals("NO") || input.equals("YES")) ? input : "NO";
     }
 
+    /**
+     * Shows a message and reads a String from console
+     * @param message message to be presented to the user
+     * @return User typed response
+     */
     public String readFromConsole(String message){
         String input = "";
+
+        System.out.print(message + ": ");
 
         try {
             input = br.readLine();
@@ -123,11 +240,17 @@ public class ConsoleApp implements iRepository{
         return input;
     }
 
-    private String setListOfMultipiersStr(){
+    /**
+     * Process listOfMultipliers object to generate the string to be used on readMultiplierFromFromConsole() and store the object for the Fundamental Unit
+     * @return string to be used on readMultiplierFromFromConsole()
+     */
+    private String processListOfMultipliers(){
         String multipliersList = "";
-        for(Multiplier m : this.listOfMultipiers){
-            if(m.getBase10Power() != 1){
-                multipliersList += "    " + m.getPrefix() + " ("+ m.getSymbol() +")" + "\n";
+        boolean isBeginningOfString = true;
+        for(Multiplier m : this.listOfMultipliers){
+            if(m.getBase10Power().compareTo(new BigDecimal("1")) != 0){
+                multipliersList += (isBeginningOfString ? "    " : ", ") + m.getPrefix() + " ("+ m.getSymbol() +")";
+                isBeginningOfString = false;
             } else {
                 this.fundamentalUnitMultiplier = m;
             }

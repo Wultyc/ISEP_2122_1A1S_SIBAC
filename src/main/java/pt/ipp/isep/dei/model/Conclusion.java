@@ -3,16 +3,9 @@ package pt.ipp.isep.dei.model;
 import pt.ipp.isep.dei.tbjStatus.TBJ_Status;
 
 public class Conclusion extends Fact{
-    public static final String OTORRHAGIA = "Otorrhagia";
-    public static final String SKULL_FRACTURE = "Skull fracture";
-    public static final String EPISTAXE = "Epistaxe";
-    public static final String HEMATHESE = "Hemathese";
-    public static final String MOUTH_HAEMORRHAGE = "Mouth haemorrhage";
-    public static final String METRORRHAGIA = "Metrorrhagia";
-    public static final String HEMATURIA = "Hematuria";
-    public static final String MELENA = "Melena";
-    public static final String RECTAL_BLEEDING = "Rectal bleeding";
-    public static final String UNKNOWN = "Consult the doctor!";
+    public static final String ZONE_CUTOVER = "BJT current zone is Cut Over";
+    public static final String ZONE_ACTIVE = "BJT current zone is Active";
+    public static final String ZONE_SATURATION = "BJT current zone is Saturation";
 
     private String description;
 

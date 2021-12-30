@@ -3,11 +3,14 @@ package pt.ipp.isep.dei.tbjStatus;
 import pt.ipp.isep.dei.kbs.Engine;
 import pt.ipp.isep.dei.kbs.TrackingAgendaEventListener;
 
+import java.math.MathContext;
+
 public class TBJ_Status {
     public static Engine kbsEngine;
     public static TrackingAgendaEventListener agendaEventListener;
+    public static final  MathContext mc = new MathContext(5);
 
-    public static final void main(String[] args) {
+    public static void main(String[] args) {
 
         kbsEngine = new Engine();
 
@@ -21,6 +24,8 @@ public class TBJ_Status {
         } catch (Throwable t) {
             t.printStackTrace();
         }
+
+        return;
     }
 
 }

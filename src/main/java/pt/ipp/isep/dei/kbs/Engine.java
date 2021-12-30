@@ -4,6 +4,7 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.LiveQuery;
+
 import pt.ipp.isep.dei.model.Justification;
 import pt.ipp.isep.dei.repository.ConsoleApp;
 import pt.ipp.isep.dei.repository.iRepository;
@@ -35,19 +36,25 @@ public class Engine {
 
         //Load repository
         this.repository = new ConsoleApp();
+        this.repository.init(this.KS, this.agendaEventListener);
     }
 
     public void runEngine(){
         //Load work memory
         loadWorkMemory();
 
-        //Run the inference engine
-        this.KS.fireAllRules();
-        // kSession.fireUntilHalt();
+        //Pass the repository as global to Drools context in case it is required
+        this.KS.setGlobal("repository",this.repository);
+
+        // Fire rules
+        //this.KS.fireAllRules();
+         this.KS.fireUntilHalt();
 
         //Close the application
         this.query.close();
         this.repository.close();
+
+        System.out.println("close engine");
     }
 
     private void loadWorkMemory(){

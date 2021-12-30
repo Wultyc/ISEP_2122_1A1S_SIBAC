@@ -11,7 +11,6 @@ import org.kie.api.runtime.rule.Match;
 
 import pt.ipp.isep.dei.model.Fact;
 import pt.ipp.isep.dei.model.Justification;
-import pt.ipp.isep.dei.tbjStatus.TBJ_Status;
 
 @SuppressWarnings("restriction")
 public class TrackingAgendaEventListener extends DefaultAgendaEventListener{

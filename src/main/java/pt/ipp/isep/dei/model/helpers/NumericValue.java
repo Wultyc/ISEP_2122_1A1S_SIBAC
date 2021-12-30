@@ -1,17 +1,24 @@
 package pt.ipp.isep.dei.model.helpers;
 
-public class NumericValue {
-    private Units unit;
-    private double value;
-    private Multiplier multiplier;
+import pt.ipp.isep.dei.tbjStatus.TBJ_Status;
 
-    public NumericValue(double value, Units unit, Multiplier multiplier) {
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class NumericValue {
+    private BigDecimal value;
+    private Multiplier multiplier;
+    private Units unit;
+
+    public NumericValue(BigDecimal value, Multiplier multiplier, Units unit) {
         this.value = value;
-        this.unit = unit;
         this.multiplier = multiplier;
+        this.unit = unit;
     }
 
-    public NumericValue(double value, Multiplier multiplier) {
+    public NumericValue(BigDecimal value, Multiplier multiplier) {
         this.value = value;
         this.multiplier = multiplier;
     }
@@ -20,9 +27,9 @@ public class NumericValue {
 
     public void setUnit(Units unit) { this.unit = unit; }
 
-    public double getValue() { return value; }
+    public BigDecimal getValue() { return value; }
 
-    public void setValue(double value) { this.value = value; }
+    public void setValue(BigDecimal value) { this.value = value; }
 
     public Multiplier getMultiplier() { return multiplier; }
 
@@ -37,8 +44,39 @@ public class NumericValue {
         return value + " " + multiplier.getSymbol() + ((unit == null) ? "" : unit.toString());
     }
 
-    public double getValueToMachine(){
-        return value * multiplier.getBase10Power();
+    public BigDecimal getValueToMachine(){
+        return this.value.multiply(this.multiplier.getBase10Power());
+    }
+
+    public void applyBestMultiplier(){
+
+        BigDecimal realValue = this.value.multiply(this.multiplier.getBase10Power());
+
+        List<Multiplier> listOfMultipliers = Multiplier.getDefaultListOfMultipliers();
+
+        List<Multiplier> filteredListOfMultipliers = (realValue.compareTo(new BigDecimal("1")) > 0)
+                ? listOfMultipliers.stream().filter(multiplier -> multiplier.getBase10Power().compareTo(new BigDecimal("1")) >= 0).collect(Collectors.toList())
+                : listOfMultipliers.stream().filter(multiplier -> multiplier.getBase10Power().compareTo(new BigDecimal("1")) <= 0).collect(Collectors.toList());
+
+        for(Multiplier m : filteredListOfMultipliers){
+
+            BigDecimal proposedValue = realValue.divide(m.getBase10Power(), TBJ_Status.mc);
+
+            int lowerValueToComparison  = proposedValue.compareTo(new BigDecimal("1"));
+            int higherValueToComparison = proposedValue.compareTo(new BigDecimal("10"));
+
+            System.out.println(m.getSymbol() + ": "+ proposedValue);
+            System.out.println(">0  :" + lowerValueToComparison);
+            System.out.println("<10 :" + higherValueToComparison);
+
+            if(lowerValueToComparison >= 0 && higherValueToComparison < 0){
+                System.out.println(m.getPrefix() + "(" + m.getSymbol() + ") chosen");
+                this.value = realValue.divide(m.getBase10Power(), TBJ_Status.mc);
+                this.multiplier = m;
+                return;
+            }
+        }
+
     }
 
 }
