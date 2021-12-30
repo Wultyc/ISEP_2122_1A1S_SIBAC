@@ -1,6 +1,6 @@
 package pt.ipp.isep.dei.math;
 
-import pt.ipp.isep.dei.model.NumericValue;
+import pt.ipp.isep.dei.model.helpers.NumericValue;
 
 public class Calculations {
     public static boolean testCutOverZone(NumericValue vbb, NumericValue vbe_on){

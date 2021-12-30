@@ -1,22 +1,7 @@
 package pt.ipp.isep.dei.view;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.kie.api.runtime.ClassObjectFilter;
-
-import pt.ipp.isep.dei.math.Multiplier;
-import pt.ipp.isep.dei.math.Units;
-import pt.ipp.isep.dei.model.NumericValue;
-import pt.ipp.isep.dei.tbjStatus.TBJ_Status;
-import pt.ipp.isep.dei.model.Evidence;
-
 public class UI {
+    /*
     private static BufferedReader br;
 
     public static void uiInit() {
@@ -83,7 +68,7 @@ public class UI {
 
         //Create a evidence Object and store it in the work memory
         NumericValue nv = (unit == null) ? new NumericValue(value, multiplier) : new NumericValue(value, unit, multiplier);;
-        Evidence e = new Evidence(ev, nv.getToHuman(), nv);
+        Evidence e = new Evidence(ev, nv.getValueToHuman(), nv);
         TBJ_Status.KS.insert(e);
 
     }
@@ -144,5 +129,5 @@ public class UI {
         }
         return input;
     }
-
+    */
 }

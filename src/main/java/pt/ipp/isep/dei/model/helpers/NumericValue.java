@@ -1,7 +1,4 @@
-package pt.ipp.isep.dei.model;
-
-import pt.ipp.isep.dei.math.Multiplier;
-import pt.ipp.isep.dei.math.Units;
+package pt.ipp.isep.dei.model.helpers;
 
 public class NumericValue {
     private Units unit;

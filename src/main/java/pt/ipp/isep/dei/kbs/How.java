@@ -1,4 +1,4 @@
-package pt.ipp.isep.dei.tbjStatus;
+package pt.ipp.isep.dei.kbs;
 
 import java.util.Map;
 

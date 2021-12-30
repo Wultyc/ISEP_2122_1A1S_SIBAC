@@ -1,4 +1,4 @@
-package pt.ipp.isep.dei.math;
+package pt.ipp.isep.dei.model.helpers;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

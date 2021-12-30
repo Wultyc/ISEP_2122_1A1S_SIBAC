@@ -1,5 +1,7 @@
 package pt.ipp.isep.dei.model;
 
+import pt.ipp.isep.dei.model.helpers.NumericValue;
+
 public class Evidence extends Fact{
     public static final String RC = "Collector resistance (Rc)";
     public static final String RE = "Emitter resistance (Re)";

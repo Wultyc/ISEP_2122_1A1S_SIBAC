@@ -1,4 +1,4 @@
-package pt.ipp.isep.dei.tbjStatus;
+package pt.ipp.isep.dei.kbs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +11,18 @@ import org.kie.api.runtime.rule.Match;
 
 import pt.ipp.isep.dei.model.Fact;
 import pt.ipp.isep.dei.model.Justification;
+import pt.ipp.isep.dei.tbjStatus.TBJ_Status;
 
 @SuppressWarnings("restriction")
 public class TrackingAgendaEventListener extends DefaultAgendaEventListener{
+    private Map<Integer, Justification> justifications;
     private List<Match> matchList = new ArrayList<Match>();
     private List<Fact> lhs = new ArrayList<Fact>();
     private List<Fact> rhs = new ArrayList<Fact>();
+
+    public TrackingAgendaEventListener(Map<Integer, Justification> justifications) {
+        this.justifications = justifications;
+    }
 
     public void resetLhs() {
         lhs.clear();
@@ -62,7 +68,7 @@ public class TrackingAgendaEventListener extends DefaultAgendaEventListener{
         for (Fact f: rhs) {
             //System.out.println(f.getId() + ":" + f);
             Justification j = new Justification(ruleName, lhs, f);
-            TBJ_Status.justifications.put(f.getId(), j);
+            this.justifications.put(f.getId(), j);
         }
 
         resetLhs();

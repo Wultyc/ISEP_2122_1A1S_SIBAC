@@ -1,5 +1,6 @@
 package pt.ipp.isep.dei.model;
 
+import pt.ipp.isep.dei.model.helpers.Status;
 import pt.ipp.isep.dei.tbjStatus.TBJ_Status;
 
 public class Hypothesis extends Fact{

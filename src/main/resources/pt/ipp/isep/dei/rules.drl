@@ -24,63 +24,6 @@ query "Conclusions"
 	$conclusion : Conclusion()
 end
 
-rule "setup"
-	when
-		not Evidence()
-	then
-
-	    //Ask the values
-		//askValue(Evidence.RC, Units.Ω);
-		//askValue(Evidence.RE, Units.Ω);
-		//askValue(Evidence.RB, Units.Ω);
-		//askValue(Evidence.VCE, Units.V);
-		//askValue(Evidence.VBE, Units.V);
-		//askValue(Evidence.VBB, Units.V);
-		//askValue(Evidence.VCC, Units.V);
-		//askValue(Evidence.IB, Units.A);
-		//askValue(Evidence.IC, Units.A);
-		//askValue(Evidence.BJT_GAIN, null);
-
-		//Set application mode
-		answer(Evidence.ENABLE_GUIDED_MODE, "yes");
-
-		//Set params
-		NumericValue nv_Vce_on = new NumericValue(0.7,Units.V,new Multiplier("Fundamental Unit", "","", 1));
-        Evidence e_Vce_on = new Evidence(Evidence.VCE_ON, nv_Vce_on.getToHuman(), nv_Vce_on);
-
-        //Set Hypothesis
-        insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_ACTIVE));
-        insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER));
-        insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_SATURATION));
-end
-
-rule "GM_R1: Enable Active Zone hypothesis"
-	when
-		eval(answer(Evidence.ENABLE_GUIDED_MODE, "yes"))
-		$hypothesis : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Proposed)
-	then
-		System.out.println("test cut over zone");
-end
-
-rule "GM_R2: Test Active Zone hypothesis"
-	when
-		eval(answer(Evidence.ENABLE_GUIDED_MODE, "yes"))
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Rejected)
-		$hypothesis : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, status == Status.Proposed)
-	then
-		System.out.println("test active zone");
-end
-
-rule "GM_R3: Conclude its Saturation Zone"
-	when
-		eval(answer(Evidence.ENABLE_GUIDED_MODE, "yes"))
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Rejected)
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, status == Status.Rejected)
-	then
-		System.out.println("conclude saturation zone");
-end
-
-
 rule "unknown"
 	when
 		not Conclusion()

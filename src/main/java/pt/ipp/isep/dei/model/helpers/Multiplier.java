@@ -1,4 +1,4 @@
-package pt.ipp.isep.dei.math;
+package pt.ipp.isep.dei.model.helpers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class Multiplier {
 
         lm.add(new Multiplier("giga", "giga","G", 1000000000));
         lm.add(new Multiplier("mega", "mega","M", 1000000));
-        lm.add(new Multiplier("kilo ", "kilo ","k", 1000));
+        lm.add(new Multiplier("kilo", "kilo","k", 1000));
         lm.add(new Multiplier("hecto", "hecto","h", 100));
         lm.add(new Multiplier("deca", "deca","da", 1));
         lm.add(new Multiplier("Fundamental Unit", "","", 1));
