@@ -5,7 +5,7 @@ import pt.ipp.isep.dei.kbs.TrackingAgendaEventListener;
 import pt.ipp.isep.dei.model.Evidence;
 import pt.ipp.isep.dei.model.Preference;
 import pt.ipp.isep.dei.model.helpers.Alternative;
-import pt.ipp.isep.dei.model.helpers.Units;
+import pt.ipp.isep.dei.model.helpers.NumericAlternative;
 
 public interface iRepository {
     void init(KieSession KS, TrackingAgendaEventListener agendaEventListener);
@@ -14,12 +14,12 @@ public interface iRepository {
 
     void loadWorkMemory();
 
-    Evidence retrieveEvidence(Alternative ev, boolean isNumeric, Units u);
+    Evidence retrieveEvidence(NumericAlternative ev);
 
     Preference retrievePreference(String pref);
 
-    Evidence insertNewEvidence(Alternative ev, boolean isNumeric, Units u);
+    Evidence insertNewEvidence(NumericAlternative ev);
 
-    Preference insertNewPreference(Alternative pref, boolean isYesOrNo);
+    Preference insertNewPreference(Alternative pref);
 
 }

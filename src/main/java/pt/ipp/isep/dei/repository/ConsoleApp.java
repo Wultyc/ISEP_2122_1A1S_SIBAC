@@ -68,7 +68,7 @@ public class ConsoleApp implements iRepository{
         this.KS.insert(e_vb_on);
 
         //Load preferences
-        this.KS.insert(insertNewPreference(Preference.ENABLE_GUIDED_MODE, true));
+        this.KS.insert(insertNewPreference(Preference.ENABLE_GUIDED_MODE));
 
         //Load default hypothesis
         this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_ACTIVE));
@@ -76,25 +76,25 @@ public class ConsoleApp implements iRepository{
         this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_SATURATION));
 
         //Load values from problem
-        this.KS.insert(insertNewEvidence(Evidence.RC, true, Units.Ω));
-        this.KS.insert(insertNewEvidence(Evidence.RE, true, Units.Ω));
-        this.KS.insert(insertNewEvidence(Evidence.RBB, true, Units.Ω));
-        this.KS.insert(insertNewEvidence(Evidence.VCE, true, Units.V));
-        this.KS.insert(insertNewEvidence(Evidence.VBE, true, Units.V));
-        this.KS.insert(insertNewEvidence(Evidence.VBB, true, Units.V));
-        this.KS.insert(insertNewEvidence(Evidence.VCC, true, Units.V));
-        this.KS.insert(insertNewEvidence(Evidence.IB, true, Units.A));
-        this.KS.insert(insertNewEvidence(Evidence.IC, true, Units.A));
-        this.KS.insert(insertNewEvidence(Evidence.BJT_GAIN, true, null));
+        this.KS.insert(insertNewEvidence(Evidence.RC));
+        this.KS.insert(insertNewEvidence(Evidence.RE));
+        this.KS.insert(insertNewEvidence(Evidence.RBB));
+        this.KS.insert(insertNewEvidence(Evidence.VCE));
+        this.KS.insert(insertNewEvidence(Evidence.VBE));
+        this.KS.insert(insertNewEvidence(Evidence.VBB));
+        this.KS.insert(insertNewEvidence(Evidence.VCC));
+        this.KS.insert(insertNewEvidence(Evidence.IB));
+        this.KS.insert(insertNewEvidence(Evidence.IC));
+        this.KS.insert(insertNewEvidence(Evidence.BJT_GAIN));
     }
 
     /**
      * Retrieve an Evidence to the inference engine
-     * @param ev Evidence
+     * @param ev NumericAlternative object
      * @return Evidence
      */
     @Override
-    public Evidence retrieveEvidence(Alternative ev, boolean isNumeric, Units u) {
+    public Evidence retrieveEvidence(NumericAlternative ev) {
 
         @SuppressWarnings("unchecked")
         Collection<Evidence> evidences = (Collection<Evidence>) this.KS.getObjects(new ClassObjectFilter(Evidence.class));
@@ -110,7 +110,7 @@ public class ConsoleApp implements iRepository{
             }
         }
 
-        Evidence e = insertNewEvidence(ev, isNumeric, u);
+        Evidence e = insertNewEvidence(ev);
 
         this.KS.insert(e);
 
@@ -129,17 +129,15 @@ public class ConsoleApp implements iRepository{
 
     /**
      * Creates new evidence in case it is not defined in Work Memory
-     * @param ev evidence from Evidence class
-     * @param isNumeric defines if its a numeric evidence
-     * @param u unit of this evidence if applied
+     * @param ev NumericAlternative object from Evidence class
      * @return evidence if needs to be created
      */
     @Override
-    public Evidence insertNewEvidence(Alternative ev, boolean isNumeric, Units u){
+    public Evidence insertNewEvidence(NumericAlternative ev){
         Evidence evidence;
 
-        if(isNumeric) {
-            NumericValue nv = readNumericValueFromConsole(ev.getLabel(), u);
+        if(ev.isNumeric()) {
+            NumericValue nv = readNumericValueFromConsole(ev.getLabel(), ev.getUnit());
             evidence = new Evidence(ev, nv.getValueToHuman(), nv);
         } else {
             String value = readFromConsole(ev.getLabel());
@@ -154,14 +152,13 @@ public class ConsoleApp implements iRepository{
 
     /**
      * Creates new preference in case it is not defined in Work Memory
-     * @param pref preference from Preference class
-     * @param isYesOrNo defines if its a yes/no evidence
+     * @param pref Alternative object from Preference class
      * @return preference if needs to be created
      */
     @Override
-    public Preference insertNewPreference(Alternative pref, boolean isYesOrNo){
+    public Preference insertNewPreference(Alternative pref){
 
-        String value = (isYesOrNo) ? readYesOrNoFromConsole(pref.getLabel()) : readFromConsole(pref.getLabel());
+        String value = (pref.isYesOrNo()) ? readYesOrNoFromConsole(pref.getLabel()) : readFromConsole(pref.getLabel());
         Preference preference = new Preference(pref, value);
 
         System.out.println(preference.toString());

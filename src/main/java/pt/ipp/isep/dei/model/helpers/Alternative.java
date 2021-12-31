@@ -1,20 +1,14 @@
 package pt.ipp.isep.dei.model.helpers;
 
 public class Alternative {
+    public static final String TYPE_YES_OR_NO = "Yes or No";
+
     private String label;
-    private boolean isNumeric;
-    private Units unit;
+    private String type;
 
-    public Alternative(String label) {
+    public Alternative(String label, String type) {
         this.label = label;
-        this.isNumeric = false;
-        this.unit = null;
-    }
-
-    public Alternative(String label, boolean isNumeric, Units unit) {
-        this.label = label;
-        this.isNumeric = isNumeric;
-        this.unit = unit;
+        this.type = type;
     }
 
     public String getLabel() {
@@ -25,24 +19,15 @@ public class Alternative {
         this.label = label;
     }
 
-    public boolean isNumeric() {
-        return isNumeric;
+    public String getType() {
+        return type;
     }
 
-    public void setNumeric(boolean numeric) {
-        isNumeric = numeric;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public Units getUnit() {
-        return unit;
-    }
-
-    public void setUnit(Units unit) {
-        this.unit = unit;
-    }
-
-    @Override
-    public String toString() {
-        return label;
+    public boolean isYesOrNo(){
+        return this.type.equals(TYPE_YES_OR_NO);
     }
 }
