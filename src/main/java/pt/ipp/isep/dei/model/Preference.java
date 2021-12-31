@@ -1,19 +1,20 @@
 package pt.ipp.isep.dei.model;
 
+import pt.ipp.isep.dei.model.helpers.Alternative;
+
 public class Preference extends Fact{
 
-    public static final String ENABLE_GUIDED_MODE  = "Enable guided mode";
+    public static final Alternative ENABLE_GUIDED_MODE  = new Alternative("Enable guided mode");
 
-    private String preference;
+    private Alternative preference;
     private String value;
 
-    public Preference(String p, String v) {
+    public Preference(Alternative p, String v) {
         preference = p;
         value = v;
     }
 
-
-    public String getPreference() {
+    public Alternative getPreference() {
         return preference;
     }
 

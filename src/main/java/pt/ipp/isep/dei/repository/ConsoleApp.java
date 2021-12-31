@@ -4,8 +4,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
+import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 
 import pt.ipp.isep.dei.kbs.TrackingAgendaEventListener;
@@ -84,7 +86,45 @@ public class ConsoleApp implements iRepository{
         this.KS.insert(insertNewEvidence(Evidence.IB, true, Units.A));
         this.KS.insert(insertNewEvidence(Evidence.IC, true, Units.A));
         this.KS.insert(insertNewEvidence(Evidence.BJT_GAIN, true, null));
+    }
 
+    /**
+     * Retrieve an Evidence to the inference engine
+     * @param ev Evidence
+     * @return Evidence
+     */
+    @Override
+    public Evidence retrieveEvidence(Alternative ev, boolean isNumeric, Units u) {
+
+        @SuppressWarnings("unchecked")
+        Collection<Evidence> evidences = (Collection<Evidence>) this.KS.getObjects(new ClassObjectFilter(Evidence.class));
+        boolean questionFound = false;
+        Evidence evidence = null;
+
+        //Search for the evidence on the work memory
+        for (Evidence e: evidences) {
+            if (e.getEvidence().getLabel().compareTo(ev.getLabel()) == 0) {
+                questionFound = true;
+                evidence = e;
+                break;
+            }
+        }
+
+        Evidence e = insertNewEvidence(ev, isNumeric, u);
+
+        this.KS.insert(e);
+
+        return e;
+    }
+
+    /**
+     * Retrieve an Preference to the inference engine
+     * @param pref Preference
+     * @return Evidence
+     */
+    @Override
+    public Preference retrievePreference(String pref) {
+        return null;
     }
 
     /**
@@ -94,14 +134,15 @@ public class ConsoleApp implements iRepository{
      * @param u unit of this evidence if applied
      * @return evidence if needs to be created
      */
-    public Evidence insertNewEvidence(String ev, boolean isNumeric, Units u){
+    @Override
+    public Evidence insertNewEvidence(Alternative ev, boolean isNumeric, Units u){
         Evidence evidence;
 
         if(isNumeric) {
-            NumericValue nv = readNumericValueFromConsole(ev, u);
+            NumericValue nv = readNumericValueFromConsole(ev.getLabel(), u);
             evidence = new Evidence(ev, nv.getValueToHuman(), nv);
         } else {
-            String value = readFromConsole(ev);
+            String value = readFromConsole(ev.getLabel());
             evidence = new Evidence(ev, value);
         }
 
@@ -117,9 +158,10 @@ public class ConsoleApp implements iRepository{
      * @param isYesOrNo defines if its a yes/no evidence
      * @return preference if needs to be created
      */
-    public Preference insertNewPreference(String pref, boolean isYesOrNo){
+    @Override
+    public Preference insertNewPreference(Alternative pref, boolean isYesOrNo){
 
-        String value = (isYesOrNo) ? readYesOrNoFromConsole(pref) : readFromConsole(pref);
+        String value = (isYesOrNo) ? readYesOrNoFromConsole(pref.getLabel()) : readFromConsole(pref.getLabel());
         Preference preference = new Preference(pref, value);
 
         System.out.println(preference.toString());
@@ -134,7 +176,7 @@ public class ConsoleApp implements iRepository{
      * @param unit unit of measurement of this numeric value. If none, send null
      * @return NumericValue object
      */
-    public NumericValue readNumericValueFromConsole(String message, Units unit){
+    private NumericValue readNumericValueFromConsole(String message, Units unit){
 
         BigDecimal value = readDoubleFromConsole(message);
         Multiplier multiplier = readMultiplierFromFromConsole();
@@ -151,7 +193,7 @@ public class ConsoleApp implements iRepository{
      * @param message message to be presented to the user
      * @return number in double format
      */
-    public BigDecimal readDoubleFromConsole(String message){
+    private BigDecimal readDoubleFromConsole(String message){
         boolean keepLoop = true;
         BigDecimal value = new BigDecimal("0");
         String valueStr = "";
@@ -173,7 +215,7 @@ public class ConsoleApp implements iRepository{
      * Shows a list of multipliers on console and asks user to select one
      * @return multiplier object equivalent to the multiplier user choose
      */
-    public Multiplier readMultiplierFromFromConsole(){
+    private Multiplier readMultiplierFromFromConsole(){
         boolean keepLoop = true;
         int searchId = -1;
         String value = "";
@@ -217,7 +259,7 @@ public class ConsoleApp implements iRepository{
      * @param message message to be presented to the user
      * @return YES or NO strings
      */
-    public String readYesOrNoFromConsole(String message){
+    private String readYesOrNoFromConsole(String message){
         String input = readFromConsole(message).toUpperCase();
         return (input.equals("NO") || input.equals("YES")) ? input : "NO";
     }
@@ -227,7 +269,7 @@ public class ConsoleApp implements iRepository{
      * @param message message to be presented to the user
      * @return User typed response
      */
-    public String readFromConsole(String message){
+    private String readFromConsole(String message){
         String input = "";
 
         System.out.print(message + ": ");

@@ -24,8 +24,6 @@ public class TBJ_Status {
         } catch (Throwable t) {
             t.printStackTrace();
         }
-
-        return;
     }
 
 }
