@@ -22,7 +22,7 @@ public class UI {
         @SuppressWarnings("unchecked")
 
         //Get evidences collection from work memory
-        Collection<Evidence> evidences = (Collection<Evidence>) TBJ_Status.KS.getObjects(new ClassObjectFilter(Evidence.class));
+        Collection<Evidence> evidences = (Collection<Evidence>) Main.KS.getObjects(new ClassObjectFilter(Evidence.class));
 
         //Define control variables
         boolean questionFound = false;
@@ -69,7 +69,7 @@ public class UI {
         //Create a evidence Object and store it in the work memory
         NumericValue nv = (unit == null) ? new NumericValue(value, multiplier) : new NumericValue(value, unit, multiplier);;
         Evidence e = new Evidence(ev, nv.getValueToHuman(), nv);
-        TBJ_Status.KS.insert(e);
+        Main.KS.insert(e);
 
     }
 
@@ -77,7 +77,7 @@ public class UI {
         @SuppressWarnings("unchecked")
 
         //Get evidences collection from work memory
-        Collection<Evidence> evidences = (Collection<Evidence>) TBJ_Status.KS.getObjects(new ClassObjectFilter(Evidence.class));
+        Collection<Evidence> evidences = (Collection<Evidence>) Main.KS.getObjects(new ClassObjectFilter(Evidence.class));
 
         //Define control variables
         boolean questionFound = false;
@@ -95,7 +95,7 @@ public class UI {
         //If evidence is found, compare with the value passed as argument and return
         if (questionFound) {
             if (evidence.getValue().compareTo(v) == 0) {
-                TBJ_Status.agendaEventListener.addLhs(evidence);
+                Main.agendaEventListener.addLhs(evidence);
                 return true;
             } else {
                 return false;
@@ -108,11 +108,11 @@ public class UI {
 
         //Create a new Evidence object and store it in work memory
         Evidence e = new Evidence(ev, value);
-        TBJ_Status.KS.insert(e);
+        Main.KS.insert(e);
 
         //Make the evaluation
         if (value.compareTo(v) == 0) {
-            TBJ_Status.agendaEventListener.addLhs(e);
+            Main.agendaEventListener.addLhs(e);
             return true;
         } else {
             return false;

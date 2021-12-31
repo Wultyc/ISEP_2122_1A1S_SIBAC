@@ -1,11 +1,11 @@
-package pt.ipp.isep.dei.tbjStatus;
+package pt.ipp.isep.dei;
 
 import pt.ipp.isep.dei.kbs.Engine;
 import pt.ipp.isep.dei.kbs.TrackingAgendaEventListener;
 
 import java.math.MathContext;
 
-public class TBJ_Status {
+public class Main {
     public static Engine kbsEngine;
     public static TrackingAgendaEventListener agendaEventListener;
     public static final  MathContext mc = new MathContext(5);
@@ -17,7 +17,7 @@ public class TBJ_Status {
         //FIXME:
         //  - Implement proper Java Event Listner class to avoid this global reference
         //  - As workaround, the agendaEventListener is returned from the engine class
-        TBJ_Status.agendaEventListener = kbsEngine.getAgendaEventListener();
+        Main.agendaEventListener = kbsEngine.getAgendaEventListener();
 
         try {
             kbsEngine.runEngine();

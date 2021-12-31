@@ -1,9 +1,9 @@
 package pt.ipp.isep.dei.model.helpers;
 
-import pt.ipp.isep.dei.tbjStatus.TBJ_Status;
+import pt.ipp.isep.dei.Main;
+import pt.ipp.isep.dei.math.Calculator;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +21,11 @@ public class NumericValue {
     public NumericValue(BigDecimal value, Multiplier multiplier) {
         this.value = value;
         this.multiplier = multiplier;
+    }
+
+    public NumericValue(BigDecimal value) {
+        this.value = value;
+        this.multiplier = new Multiplier();
     }
 
     public Units getUnit() { return unit; }
@@ -45,33 +50,31 @@ public class NumericValue {
     }
 
     public BigDecimal getValueToMachine(){
-        return this.value.multiply(this.multiplier.getBase10Power());
+        return Calculator.multiply(this.value, this.multiplier.getBase10Power());
     }
 
     public void applyBestMultiplier(){
 
         BigDecimal realValue = this.value.multiply(this.multiplier.getBase10Power());
+        BigDecimal one = new BigDecimal("1");
+        BigDecimal ten = new BigDecimal("10");
 
         List<Multiplier> listOfMultipliers = Multiplier.getDefaultListOfMultipliers();
 
-        List<Multiplier> filteredListOfMultipliers = (realValue.compareTo(new BigDecimal("1")) > 0)
-                ? listOfMultipliers.stream().filter(multiplier -> multiplier.getBase10Power().compareTo(new BigDecimal("1")) >= 0).collect(Collectors.toList())
-                : listOfMultipliers.stream().filter(multiplier -> multiplier.getBase10Power().compareTo(new BigDecimal("1")) <= 0).collect(Collectors.toList());
+        List<Multiplier> filteredListOfMultipliers = (Calculator.greaterThan(realValue,one))
+                ? listOfMultipliers.stream().filter(multiplier -> Calculator.greaterThanOrEqual(multiplier.getBase10Power(), one)).collect(Collectors.toList())
+                : listOfMultipliers.stream().filter(multiplier -> Calculator.lowerThanOrEqual(multiplier.getBase10Power(), one)).collect(Collectors.toList());
 
         for(Multiplier m : filteredListOfMultipliers){
 
-            BigDecimal proposedValue = realValue.divide(m.getBase10Power(), TBJ_Status.mc);
+            BigDecimal proposedValue = Calculator.fraction(realValue,m.getBase10Power());
 
-            int lowerValueToComparison  = proposedValue.compareTo(new BigDecimal("1"));
-            int higherValueToComparison = proposedValue.compareTo(new BigDecimal("10"));
+            boolean lowerValueToComparison  = Calculator.greaterThanOrEqual(proposedValue, one);
+            boolean higherValueToComparison = Calculator.lowerThan(proposedValue, ten);
 
-            System.out.println(m.getSymbol() + ": "+ proposedValue);
-            System.out.println(">0  :" + lowerValueToComparison);
-            System.out.println("<10 :" + higherValueToComparison);
-
-            if(lowerValueToComparison >= 0 && higherValueToComparison < 0){
+            if(lowerValueToComparison && higherValueToComparison){
                 System.out.println(m.getPrefix() + "(" + m.getSymbol() + ") chosen");
-                this.value = realValue.divide(m.getBase10Power(), TBJ_Status.mc);
+                this.value = realValue.divide(m.getBase10Power(), Main.mc);
                 this.multiplier = m;
                 return;
             }

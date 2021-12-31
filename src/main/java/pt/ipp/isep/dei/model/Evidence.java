@@ -5,6 +5,8 @@ import pt.ipp.isep.dei.model.helpers.NumericAlternative;
 import pt.ipp.isep.dei.model.helpers.NumericValue;
 import pt.ipp.isep.dei.model.helpers.Units;
 
+import java.math.BigDecimal;
+
 public class Evidence extends Fact implements Comparable<Evidence>{
     public static final NumericAlternative RC = new NumericAlternative("Collector resistance (Rc)", true, Units.Ω);
     public static final NumericAlternative RE = new NumericAlternative("Emitter resistance (Re)", true, Units.Ω);
@@ -16,7 +18,7 @@ public class Evidence extends Fact implements Comparable<Evidence>{
     public static final NumericAlternative IB  = new NumericAlternative("Current on base circuit (Ib)", true, Units.A);
     public static final NumericAlternative IC  = new NumericAlternative("Current on collector circuit (Ic)", true, Units.A);
     public static final NumericAlternative BJT_GAIN  = new NumericAlternative("BJT gain", true, null);
-    public static final NumericAlternative VBE_ON  = new NumericAlternative("Tension to enable BTJ (Vbe on)", true, Units.V);
+    public static final NumericAlternative VBE_ON  = new NumericAlternative("Tension to enable BTJStatus (Vbe on)", true, Units.V);
 
 
 
@@ -45,6 +47,10 @@ public class Evidence extends Fact implements Comparable<Evidence>{
 
     public NumericValue getNumericValue() {
         return numericValue;
+    }
+
+    public BigDecimal getNormValue() {
+        return numericValue.getValueToMachine();
     }
 
     public String toString() {

@@ -5,6 +5,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.LiveQuery;
 
+import pt.ipp.isep.dei.kbs.bjt.BTJStatus;
 import pt.ipp.isep.dei.model.Justification;
 import pt.ipp.isep.dei.repository.ConsoleApp;
 import pt.ipp.isep.dei.repository.iRepository;
@@ -18,6 +19,7 @@ public class Engine {
     private TrackingAgendaEventListener agendaEventListener;
     private Map<Integer, Justification> justifications;
     private iRepository repository;
+    private BTJStatus btjStatus;
 
     public Engine(){
         //Create Justifications structure
@@ -37,6 +39,9 @@ public class Engine {
         //Load repository
         this.repository = new ConsoleApp();
         this.repository.init(this.KS, this.agendaEventListener);
+
+        //Load BTJStatus
+        this.btjStatus = new BTJStatus(this.KS, this.agendaEventListener, this.repository);
     }
 
     public void runEngine(){
@@ -44,7 +49,7 @@ public class Engine {
         loadWorkMemory();
 
         //Pass the repository as global to Drools context in case it is required
-        this.KS.setGlobal("repository",this.repository);
+        this.KS.setGlobal("btjStatus",this.btjStatus);
 
         // Fire rules
         //this.KS.fireAllRules();

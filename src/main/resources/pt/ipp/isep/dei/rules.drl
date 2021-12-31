@@ -17,14 +17,21 @@ package pt.ipp.isep.dei;
 
 import pt.ipp.isep.dei.model.*;
 import pt.ipp.isep.dei.model.helpers.*;
-import pt.ipp.isep.dei.math.*;
+import pt.ipp.isep.dei.kbs.bjt.*;
 
-global pt.ipp.isep.dei.repository.iRepository repository;
+global pt.ipp.isep.dei.kbs.bjt.BTJStatus btjStatus;
 
 query "Conclusions"
 	$conclusion : Conclusion()
 end
 
+query "evidence"(String ev, String v)
+	e : Evidence( evidence == ev, value == v )
+end
+
+/**
+ * Set timeout for the rules execution, to prevent infinit loop
+ */
 rule "Stop the rule engine after 120s"
 timer ( int: 120s )
 salience 0
@@ -34,58 +41,48 @@ salience 0
         drools.halt();
     end
 
-rule "R1: Enable Cut Over Zone Hypothesis"
-lock-on-active
-	when
-		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
-		$hypothesis : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Proposed)
-	then
-		$hypothesis.setStatus(Status.In_Test);
-		update($hypothesis);
-end
+/**
+ * Test hypothesis "in in cutover"
+ */
 
-rule "R2: Enable Active Zone Hypothesis"
-lock-on-active
-	when
-		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Rejected)
-		$hypothesis : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, status == Status.Proposed)
-	then
-		$hypothesis.setStatus(Status.In_Test);
-		update($hypothesis);
-end
+/**
+ * Hypothesis "in in cutover" accepted
+ */
 
-rule "R3: Conclud Hypothesis Zone Hypothesis"
-lock-on-active
-	when
-		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Rejected)
-		$hypothesis : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, status == Status.Rejected)
-	then
-		Conclusion c = new Conclusion(Conclusion.ZONE_SATURATION);
-        insert(c);
-end
+/**
+ * Test hypothesis "in in active"
+ */
 
-rule "R4: Evaluate Cut over Zone Hypothesis"
-	when
-		$hypothesis : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.In_Test)
-        $vbe_on : Evidence( evidence == Evidence.VBE_ON)
-        $vbb : Evidence( evidence == Evidence.VBB )
-	then
-	    modify($hypothesis){
-	        setStatus((ValidateBTJStatus.testCutOverZone($vbb.getNumericValue(), $vbe_on.getNumericValue()) ? Status.Accepted : Status.Rejected))
-	    }
-end
+/**
+ * Hypothesis "in in active" accepted
+ */
 
-rule "R5: Conclud Cut over Zone Hypothesis"
-	when
-		$hypothesis : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Accepted)
-	then
-	    Conclusion c = new Conclusion(Conclusion.ZONE_CUTOVER);
-        insert(c);
-end
+/**
+ * Test hypothesis "in in saturation"
+ */
 
-query "evidence"(String ev, String v)
-	e : Evidence( evidence == ev, value == v )
-end
+/**
+ * Hypothesis "in in saturation" accepted
+ */
+
+/**
+ * Guided mode and no hypothesis
+ */
+
+/**
+ * Guided mode and hypothesis "in in cutover" rejected
+ */
+
+/**
+ * Guided mode and hypothesis "in in cutover" and hypothesis "in in active" rejected
+ */
+
+/**
+ * Free mode and less than three hypothesis rejected
+ */
+
+/**
+ * Free mode and three hypothesis rejected
+ */
+
 

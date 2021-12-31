@@ -70,22 +70,22 @@ public class ConsoleApp implements iRepository{
         //Load preferences
         this.KS.insert(insertNewPreference(Preference.ENABLE_GUIDED_MODE));
 
-        //Load default hypothesis
-        this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_ACTIVE));
-        this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER));
-        this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_SATURATION));
+        ////Load default hypothesis
+        //this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_ACTIVE));
+        //this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER));
+        //this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_SATURATION));
 
-        //Load values from problem
-        this.KS.insert(insertNewEvidence(Evidence.RC));
-        this.KS.insert(insertNewEvidence(Evidence.RE));
-        this.KS.insert(insertNewEvidence(Evidence.RBB));
-        this.KS.insert(insertNewEvidence(Evidence.VCE));
-        this.KS.insert(insertNewEvidence(Evidence.VBE));
-        this.KS.insert(insertNewEvidence(Evidence.VBB));
-        this.KS.insert(insertNewEvidence(Evidence.VCC));
-        this.KS.insert(insertNewEvidence(Evidence.IB));
-        this.KS.insert(insertNewEvidence(Evidence.IC));
-        this.KS.insert(insertNewEvidence(Evidence.BJT_GAIN));
+        ////Load values from problem
+        //this.KS.insert(insertNewEvidence(Evidence.RC));
+        //this.KS.insert(insertNewEvidence(Evidence.RE));
+        //this.KS.insert(insertNewEvidence(Evidence.RBB));
+        //this.KS.insert(insertNewEvidence(Evidence.VCE));
+        //this.KS.insert(insertNewEvidence(Evidence.VBE));
+        //this.KS.insert(insertNewEvidence(Evidence.VBB));
+        //this.KS.insert(insertNewEvidence(Evidence.VCC));
+        //this.KS.insert(insertNewEvidence(Evidence.IB));
+        //this.KS.insert(insertNewEvidence(Evidence.IC));
+        //this.KS.insert(insertNewEvidence(Evidence.BJT_GAIN));
     }
 
     /**

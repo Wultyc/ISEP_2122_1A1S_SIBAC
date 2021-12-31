@@ -6,7 +6,6 @@ import org.kie.api.runtime.rule.ViewChangedEventListener;
 
 import pt.ipp.isep.dei.model.Conclusion;
 import pt.ipp.isep.dei.model.Justification;
-import pt.ipp.isep.dei.tbjStatus.TBJ_Status;
 
 import java.util.Map;
 
@@ -28,7 +27,7 @@ public class JustificationListner implements ViewChangedEventListener {
         Conclusion conclusion = (Conclusion) row.get("$conclusion");
         System.out.println(">>>" + conclusion.toString());
 
-        //System.out.println(TBJ_Status.justifications);
+        //System.out.println(Main.justifications);
         How how = new How(this.justifications);
         System.out.println(how.getHowExplanation(conclusion.getId()));
 

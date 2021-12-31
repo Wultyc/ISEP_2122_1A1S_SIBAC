@@ -1,6 +1,6 @@
 package pt.ipp.isep.dei.model;
 
-import pt.ipp.isep.dei.tbjStatus.TBJ_Status;
+import pt.ipp.isep.dei.Main;
 
 public class Conclusion extends Fact{
     public static final String ZONE_CUTOVER = "BJT current zone is Cut Over";
@@ -11,7 +11,7 @@ public class Conclusion extends Fact{
 
     public Conclusion(String description) {
         this.description = description;
-        TBJ_Status.agendaEventListener.addRhs(this);
+        Main.agendaEventListener.addRhs(this);
     }
 
     public String getDescription() {
