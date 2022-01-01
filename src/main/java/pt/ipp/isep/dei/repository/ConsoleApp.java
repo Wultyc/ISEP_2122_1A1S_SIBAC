@@ -144,7 +144,7 @@ public class ConsoleApp implements iRepository{
             evidence = new Evidence(ev, value);
         }
 
-        System.out.println(evidence.toString());
+        System.out.println(evidence.getEvidence().toString());
         System.out.println(this.breakOutLine);
 
         return evidence;
@@ -161,7 +161,7 @@ public class ConsoleApp implements iRepository{
         String value = (pref.isYesOrNo()) ? readYesOrNoFromConsole(pref.getLabel()) : readFromConsole(pref.getLabel());
         Preference preference = new Preference(pref, value);
 
-        System.out.println(preference.toString());
+        System.out.println(preference.getPreference().toString());
         System.out.println(this.breakOutLine);
 
         return preference;

@@ -7,7 +7,7 @@ import pt.ipp.isep.dei.model.helpers.Units;
 
 import java.math.BigDecimal;
 
-public class Evidence extends Fact implements Comparable<Evidence>{
+public class Evidence extends Fact{
     public static final NumericAlternative RC = new NumericAlternative("Collector resistance (Rc)", true, Units.Ω);
     public static final NumericAlternative RE = new NumericAlternative("Emitter resistance (Re)", true, Units.Ω);
     public static final NumericAlternative RBB = new NumericAlternative("Base resistance (Rbb)", true, Units.Ω);
@@ -57,10 +57,5 @@ public class Evidence extends Fact implements Comparable<Evidence>{
         return (evidence + " = " + value);
     }
 
-
-    @Override
-    public int compareTo(@NotNull Evidence o) {
-        return 0;
-    }
 }
 

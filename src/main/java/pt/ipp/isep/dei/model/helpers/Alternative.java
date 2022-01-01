@@ -30,4 +30,9 @@ public class Alternative {
     public boolean isYesOrNo(){
         return this.type.equals(TYPE_YES_OR_NO);
     }
+
+    @Override
+    public String toString() {
+        return label;
+    }
 }
