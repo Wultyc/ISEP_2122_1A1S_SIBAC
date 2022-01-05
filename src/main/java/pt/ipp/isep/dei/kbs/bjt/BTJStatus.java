@@ -1,9 +1,11 @@
 package pt.ipp.isep.dei.kbs.bjt;
 
+import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 import pt.ipp.isep.dei.kbs.TrackingAgendaEventListener;
 import pt.ipp.isep.dei.math.Calculator;
 import pt.ipp.isep.dei.model.Evidence;
+import pt.ipp.isep.dei.model.Hypothesis;
 import pt.ipp.isep.dei.model.helpers.Multiplier;
 import pt.ipp.isep.dei.model.helpers.NumericAlternative;
 import pt.ipp.isep.dei.model.helpers.NumericValue;
@@ -11,6 +13,7 @@ import pt.ipp.isep.dei.repository.iRepository;
 import pt.ipp.isep.dei.Main;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 
 public class BTJStatus {
 
@@ -25,6 +28,9 @@ public class BTJStatus {
     }
 
     public boolean testCutOverZone(){
+
+        Main.LOGGER.info("Starting testing Cut Over Zone");
+
         Evidence VBB = this.repository.retrieveEvidence(Evidence.VBB);
         Evidence VBE_ON = this.repository.retrieveEvidence(Evidence.VBE_ON);
 
@@ -35,10 +41,15 @@ public class BTJStatus {
             this.agendaEventListener.addLhs(VBE_ON);
         }
 
+        Main.LOGGER.info("Cut Over Zone returned " + validation);
+
         return validation;
     }
 
     public boolean testActiveZone(){
+
+        Main.LOGGER.info("Starting testing Active Zone");
+
         Evidence VCC = this.repository.retrieveEvidence(Evidence.VCC);
         Evidence VBB = this.repository.retrieveEvidence(Evidence.VBB);
         Evidence VBE = this.repository.retrieveEvidence(Evidence.VBE_ON);
@@ -72,10 +83,14 @@ public class BTJStatus {
             this.agendaEventListener.addLhs(VCE);
         }
 
+        Main.LOGGER.info("Active Zone returned " + validation);
+
         return validation;
     }
 
     public boolean testSaturationZone(){
+
+        Main.LOGGER.info("Starting testing Saturation Zone");
 
         Evidence VCC = this.repository.retrieveEvidence(Evidence.VCC);
         Evidence VBB = this.repository.retrieveEvidence(Evidence.VBB);
@@ -131,7 +146,26 @@ public class BTJStatus {
             this.agendaEventListener.addLhs(IC);
         }
 
+        Main.LOGGER.info("Saturation Zone returned " + validation);
+
         return validation;
+    }
+
+    public boolean hasMoreHypothesisToTest(){
+        int count = countNrFacts(Hypothesis.class);
+
+        Main.LOGGER.info("Where tested already " + count + " Hypothesis");
+
+        return count < 3;
+    }
+
+    public int countNrFacts(Class<?> factType){
+        return this.KS.getObjects(new ClassObjectFilter(factType)).size();
+    }
+
+    public void chooseNewHypothesis(){
+        Hypothesis newHypothesis = this.repository.chooseNewHypothesis();
+        this.KS.insert(newHypothesis);
     }
 
     private Evidence generateEvidence(BigDecimal value, NumericAlternative alternative){

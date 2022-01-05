@@ -30,6 +30,138 @@ query "evidence"(String ev, String v)
 end
 
 /**
+ * Test hypothesis "in in cutover"
+ */
+rule "R1: Test hypothesis 'in in cutover'"
+	when
+		$h : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.In_Test)
+	then
+		modify($h){
+            setStatus(btjStatus.testCutOverZone() ? Status.Accepted : Status.Rejected)
+        }
+end
+
+/**
+ * Hypothesis "in in cutover" accepted
+ */
+rule "R2: Hypothesis 'in cutover' accepted"
+	when
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Accepted)
+	then
+		Conclusion c = new Conclusion(Conclusion.ZONE_CUTOVER);
+        insert(c);
+end
+
+/**
+ * Test hypothesis "in in active"
+ */
+rule "R3: Test hypothesis 'in in active'"
+	when
+		$h : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, status == Status.In_Test)
+	then
+		modify($h){
+            setStatus(btjStatus.testActiveZone() ? Status.Accepted : Status.Rejected)
+        }
+end
+
+/**
+ * Hypothesis "in in active" accepted
+ */
+rule "R4: Hypothesis 'in in active' accepted"
+	when
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, status == Status.Accepted)
+	then
+		Conclusion c = new Conclusion(Conclusion.ZONE_ACTIVE);
+        insert(c);
+end
+
+/**
+ * Test hypothesis "in in saturation"
+ */
+rule "R5: Test hypothesis 'in in saturation'"
+	when
+		$h : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_SATURATION, status == Status.In_Test)
+	then
+		modify($h){
+            setStatus(btjStatus.testSaturationZone() ? Status.Accepted : Status.Rejected)
+        }
+end
+
+/**
+ * Hypothesis "in in saturation" accepted
+ */
+rule "R6: Hypothesis 'in in saturation' accepted"
+	when
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_SATURATION, status == Status.Accepted)
+	then
+		Conclusion c = new Conclusion(Conclusion.ZONE_SATURATION);
+        insert(c);
+end
+
+/**
+ * Guided mode and no hypothesis
+ */
+rule "R7: Guided mode and no hypothesis"
+	when
+		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
+		eval(btjStatus.countNrFacts(Hypothesis.class) == 0)
+	then
+	    Hypothesis h = new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER);
+		h.setStatus(Status.In_Test);
+		insert(h);
+end
+
+/**
+ * Guided mode and hypothesis "in in cutover" rejected
+ */
+rule "R8: Guided mode and hypothesis 'in in cutover' rejected"
+	when
+		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Rejected)
+	then
+	    Hypothesis h = new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_ACTIVE);
+		h.setStatus(Status.In_Test);
+		insert(h);
+end
+
+/**
+ * Guided mode and hypothesis "in in cutover" and hypothesis "in in active" rejected
+ */
+rule "R9: Guided mode and hypothesis 'in in cutover' and hypothesis 'in in active' rejected"
+	when
+		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Rejected)
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, status == Status.Rejected)
+	then
+	    Conclusion c = new Conclusion(Conclusion.ZONE_SATURATION);
+        insert(c);
+end
+
+/**
+ * Free mode and less than three hypothesis rejected
+ */
+rule "R10: Free mode and less than three hypothesis rejected"
+	when
+		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "NO")
+		eval(btjStatus.hasMoreHypothesisToTest())
+	then
+	    btjStatus.chooseNewHypothesis();
+end
+
+/**
+ * Free mode and three hypothesis rejected
+ */
+rule "R11: Free mode and three hypothesis rejected"
+	when
+		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "NO")
+		eval(!btjStatus.hasMoreHypothesisToTest())
+	then
+	    Conclusion c = new Conclusion(Conclusion.ZONE_UNKNOWN);
+        insert(c);
+end
+
+
+/**
  * Set timeout for the rules execution, to prevent infinit loop
  */
 rule "Stop the rule engine after 120s"
@@ -37,52 +169,6 @@ timer ( int: 120s )
 salience 0
     when
     then
-        System.err.println("*** Stop the rule engine after 5s ***");
+        System.err.println("*** Stop the rule engine after 120s ***");
         drools.halt();
     end
-
-/**
- * Test hypothesis "in in cutover"
- */
-
-/**
- * Hypothesis "in in cutover" accepted
- */
-
-/**
- * Test hypothesis "in in active"
- */
-
-/**
- * Hypothesis "in in active" accepted
- */
-
-/**
- * Test hypothesis "in in saturation"
- */
-
-/**
- * Hypothesis "in in saturation" accepted
- */
-
-/**
- * Guided mode and no hypothesis
- */
-
-/**
- * Guided mode and hypothesis "in in cutover" rejected
- */
-
-/**
- * Guided mode and hypothesis "in in cutover" and hypothesis "in in active" rejected
- */
-
-/**
- * Free mode and less than three hypothesis rejected
- */
-
-/**
- * Free mode and three hypothesis rejected
- */
-
-

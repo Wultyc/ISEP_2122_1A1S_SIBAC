@@ -4,8 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
@@ -103,7 +102,7 @@ public class ConsoleApp implements iRepository{
 
         //Search for the evidence on the work memory
         for (Evidence e: evidences) {
-            if (e.getEvidence().getLabel().compareTo(ev.getLabel()) == 0) {
+            if (e.getEvidence().getLabel().equals(ev.getLabel())) {
                 questionFound = true;
                 evidence = e;
                 break;
@@ -128,6 +127,39 @@ public class ConsoleApp implements iRepository{
     }
 
     /**
+     * Prompt user to choose a new hypothesis
+     * @return Hypothesis chosen by the user
+     */
+    @Override
+    public Hypothesis chooseNewHypothesis() {
+        Collection<Hypothesis> hypothesis = (Collection<Hypothesis>) this.KS.getObjects(new ClassObjectFilter(Hypothesis.class));
+
+        String newHypothesis = "";
+
+        Map<String, String> hypothesisList = new HashMap<>();
+        hypothesisList.put(Hypothesis.ZONE_ACTIVE, Hypothesis.ZONE_ACTIVE);
+        hypothesisList.put(Hypothesis.ZONE_CUT_OVER, Hypothesis.ZONE_CUT_OVER);
+        hypothesisList.put(Hypothesis.ZONE_SATURATION, Hypothesis.ZONE_SATURATION);
+
+        for(Hypothesis h : hypothesis){
+            String hyp = h.getValue();
+            hypothesisList.remove(hyp);
+        }
+
+        while (newHypothesis.isEmpty()){
+            for(String s : hypothesisList.values()){
+                String question = "Test hypothesis '" + Hypothesis.ZONE + " = " + s + "' (yes/no)";
+                if (readYesOrNoFromConsole(question).equals("YES")){
+                    newHypothesis = s;
+                    break;
+                }
+            }
+        }
+
+        return new Hypothesis(Hypothesis.ZONE, newHypothesis);
+    }
+
+    /**
      * Creates new evidence in case it is not defined in Work Memory
      * @param ev NumericAlternative object from Evidence class
      * @return evidence if needs to be created
@@ -144,7 +176,7 @@ public class ConsoleApp implements iRepository{
             evidence = new Evidence(ev, value);
         }
 
-        System.out.println(evidence.getEvidence().toString());
+        System.out.println(evidence.toString());
         System.out.println(this.breakOutLine);
 
         return evidence;

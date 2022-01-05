@@ -6,6 +6,7 @@ public class Conclusion extends Fact{
     public static final String ZONE_CUTOVER = "BJT current zone is Cut Over";
     public static final String ZONE_ACTIVE = "BJT current zone is Active";
     public static final String ZONE_SATURATION = "BJT current zone is Saturation";
+    public static final String ZONE_UNKNOWN = "Cannot determinate BJT current zone";
 
     private String description;
 

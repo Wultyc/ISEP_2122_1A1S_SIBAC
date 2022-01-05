@@ -10,9 +10,7 @@ public class Calculator {
     public static boolean greaterThan(BigDecimal bd1, BigDecimal bd2){
         return bd1.compareTo(bd2) > 0;
     }
-    public static boolean lowerThan(BigDecimal bd1, BigDecimal bd2){
-        return bd1.compareTo(bd2) < 0;
-    }
+    public static boolean lowerThan(BigDecimal bd1, BigDecimal bd2){return bd1.compareTo(bd2) < 0;}
     public static boolean equal(BigDecimal bd1, BigDecimal bd2){
         return bd1.compareTo(bd2) == 0;
     }
