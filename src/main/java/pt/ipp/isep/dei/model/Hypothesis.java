@@ -32,7 +32,6 @@ public class Hypothesis extends Fact{
 
     public void setStatus(Status status) {
         this.status = status;
-        Main.agendaEventListener.addRhs(this);
     }
 
     public String toString() {
