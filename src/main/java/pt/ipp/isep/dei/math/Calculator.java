@@ -45,7 +45,7 @@ public class Calculator {
 
     public static BigDecimal multiply(BigDecimal ... bds){
 
-        BigDecimal res = new BigDecimal("0");
+        BigDecimal res = new BigDecimal("1");
 
         for (BigDecimal bd : bds) {
             res = res.multiply(bd);
@@ -56,7 +56,7 @@ public class Calculator {
 
     public static BigDecimal divide(BigDecimal ... bds){
 
-        BigDecimal res = new BigDecimal("0");
+        BigDecimal res = new BigDecimal("1");
 
         for (BigDecimal bd : bds) {
             res = res.divide(bd, Calculator.mc);

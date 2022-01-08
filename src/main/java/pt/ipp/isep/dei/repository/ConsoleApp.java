@@ -105,7 +105,7 @@ public class ConsoleApp implements iRepository{
             if (e.getEvidence().getLabel().equals(ev.getLabel())) {
                 questionFound = true;
                 evidence = e;
-                break;
+                return e;
             }
         }
 
