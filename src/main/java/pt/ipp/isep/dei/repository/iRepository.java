@@ -2,7 +2,7 @@ package pt.ipp.isep.dei.repository;
 
 import org.kie.api.runtime.KieSession;
 import pt.ipp.isep.dei.kbs.TrackingAgendaEventListener;
-import pt.ipp.isep.dei.model.Evidence;
+import pt.ipp.isep.dei.model.NumericEvidence;
 import pt.ipp.isep.dei.model.Hypothesis;
 import pt.ipp.isep.dei.model.Preference;
 import pt.ipp.isep.dei.model.helpers.Alternative;
@@ -15,13 +15,13 @@ public interface iRepository {
 
     void loadWorkMemory();
 
-    Evidence retrieveEvidence(NumericAlternative ev);
+    NumericEvidence retrieveEvidence(NumericAlternative ev);
 
     Preference retrievePreference(String pref);
 
     Hypothesis chooseNewHypothesis();
 
-    Evidence insertNewEvidence(NumericAlternative ev);
+    NumericEvidence insertNewNumericEvidence(NumericAlternative ev);
 
     Preference insertNewPreference(Alternative pref);
 

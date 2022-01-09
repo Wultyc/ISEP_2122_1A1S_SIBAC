@@ -1,43 +1,22 @@
 package pt.ipp.isep.dei.model;
 
-import org.jetbrains.annotations.NotNull;
-import pt.ipp.isep.dei.model.helpers.NumericAlternative;
-import pt.ipp.isep.dei.model.helpers.NumericValue;
-import pt.ipp.isep.dei.model.helpers.Units;
-
-import java.math.BigDecimal;
+import pt.ipp.isep.dei.model.helpers.Alternative;
 
 public class Evidence extends Fact{
-    public static final NumericAlternative RC = new NumericAlternative("Collector resistance (Rc)", true, Units.Ω);
-    public static final NumericAlternative RE = new NumericAlternative("Emitter resistance (Re)", true, Units.Ω);
-    public static final NumericAlternative RBB = new NumericAlternative("Base resistance (Rbb)", true, Units.Ω);
-    public static final NumericAlternative VCE = new NumericAlternative("Voltage between Collector and Emitter (Vce)", true, Units.V);
-    public static final NumericAlternative VBE = new NumericAlternative("Voltage between Collector and Emitter (Vbe)", true, Units.V);
-    public static final NumericAlternative VBB = new NumericAlternative("Voltage source from base circuit (Vbb)", true, Units.V);
-    public static final NumericAlternative VCC = new NumericAlternative("Voltage source from collector circuit (Vcc)", true, Units.V);
-    public static final NumericAlternative IB  = new NumericAlternative("Current on base circuit (Ib)", true, Units.A);
-    public static final NumericAlternative IC  = new NumericAlternative("Current on collector circuit (Ic)", true, Units.A);
-    public static final NumericAlternative BJT_GAIN  = new NumericAlternative("BJT gain", true, null);
-    public static final NumericAlternative VBE_ON  = new NumericAlternative("Tension to enable BTJStatus (Vbe on)", true, Units.V);
 
+    public static final String TBJ_IN_CUT_OVER_ZONE = "BTJ is in Cut-Over Zone";
+    public static final String TBJ_IN_ACTIVE_ZONE = "BTJ is in Active Zone";
+    public static final String TBJ_IN_SATURATION_ZONE = "BTJ is in Saturation Zone";
 
-
-    private NumericAlternative evidence;
+    private String evidence;
     private String value;
-    private NumericValue numericValue;
 
-    public Evidence(NumericAlternative ev, String v) {
+    public Evidence(String ev, String v) {
         evidence = ev;
         value = v;
     }
 
-    public Evidence(NumericAlternative ev, String v, NumericValue nv) {
-        evidence = ev;
-        value = v;
-        numericValue = nv;
-    }
-
-    public NumericAlternative getEvidence() {
+    public String getEvidence() {
         return evidence;
     }
 
@@ -45,17 +24,7 @@ public class Evidence extends Fact{
         return value;
     }
 
-    public NumericValue getNumericValue() {
-        return numericValue;
-    }
-
-    public BigDecimal getNormValue() {
-        return numericValue.getValueToMachine();
-    }
-
     public String toString() {
-        return (evidence + " = " + value);
+        return (evidence + ": " + value);
     }
-
 }
-

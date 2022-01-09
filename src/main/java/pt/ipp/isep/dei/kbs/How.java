@@ -22,14 +22,18 @@ public class How {
         Justification j = justifications.get(factNumber);
         if (j != null) { // justification for Fact factNumber was found
             sb.append(getIdentation(level));
-            sb.append(j.getConclusion() + " was obtained by rule " + j.getRuleName() + " because");
+
+            //Write the conclusions
+            sb.append(j.getConclusion() + " was obtained by rule '" + j.getRuleName() + "' because");
             sb.append('\n');
+
+            //Write the LHS memory details
             int l = level + 1;
             for (Fact f : j.getLhs()) {
                 sb.append(getIdentation(l));
-                sb.append(f);
+                sb.append("- " + f);
                 sb.append('\n');
-                if (f instanceof Hypothesis) {
+                if (f instanceof Hypothesis && f.getId() != factNumber) {
                     String s = getHowExplanation(f.getId(), l + 1);
                     sb.append(s);
                 }

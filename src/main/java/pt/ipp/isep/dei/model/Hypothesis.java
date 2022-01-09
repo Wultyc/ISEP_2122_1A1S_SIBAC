@@ -1,7 +1,7 @@
 package pt.ipp.isep.dei.model;
 
-import pt.ipp.isep.dei.model.helpers.Status;
 import pt.ipp.isep.dei.Main;
+import pt.ipp.isep.dei.model.helpers.Status;
 
 public class Hypothesis extends Fact{
     public static final String ZONE = "BJT current Zone";
@@ -16,7 +16,6 @@ public class Hypothesis extends Fact{
     public Hypothesis(String description, String value) {
         this.description = description;
         this.value = value;
-        this.status = Status.Proposed;
         Main.agendaEventListener.addRhs(this);
     }
 
@@ -32,10 +31,11 @@ public class Hypothesis extends Fact{
 
     public void setStatus(Status status) {
         this.status = status;
+        Main.agendaEventListener.addRhs(this);
     }
 
     public String toString() {
-        return ( "Hypothesis '" + description + " is " + value + "' is " + status);
+        return ( "Hypothesis '" + description + " is " + value + " is " + status);
     }
 }
 

@@ -63,7 +63,7 @@ public class ConsoleApp implements iRepository{
     public void loadWorkMemory(){
         //Load parameters
         NumericValue nv_vb_on = new NumericValue(new BigDecimal("0.7"),this.fundamentalUnitMultiplier,Units.V);
-        Evidence e_vb_on = new Evidence(Evidence.VBE_ON,nv_vb_on.getValueToHuman(), nv_vb_on);
+        NumericEvidence e_vb_on = new NumericEvidence(NumericEvidence.VBE_ON,nv_vb_on.getValueToHuman(), nv_vb_on);
         this.KS.insert(e_vb_on);
 
         //Load preferences
@@ -75,41 +75,41 @@ public class ConsoleApp implements iRepository{
         //this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_SATURATION));
 
         ////Load values from problem
-        //this.KS.insert(insertNewEvidence(Evidence.RC));
-        //this.KS.insert(insertNewEvidence(Evidence.RE));
-        //this.KS.insert(insertNewEvidence(Evidence.RBB));
-        //this.KS.insert(insertNewEvidence(Evidence.VCE));
-        //this.KS.insert(insertNewEvidence(Evidence.VBE));
-        //this.KS.insert(insertNewEvidence(Evidence.VBB));
-        //this.KS.insert(insertNewEvidence(Evidence.VCC));
-        //this.KS.insert(insertNewEvidence(Evidence.IB));
-        //this.KS.insert(insertNewEvidence(Evidence.IC));
-        //this.KS.insert(insertNewEvidence(Evidence.BJT_GAIN));
+        //this.KS.insert(insertNewEvidence(NumericEvidence.RC));
+        //this.KS.insert(insertNewEvidence(NumericEvidence.RE));
+        //this.KS.insert(insertNewEvidence(NumericEvidence.RBB));
+        //this.KS.insert(insertNewEvidence(NumericEvidence.VCE));
+        //this.KS.insert(insertNewEvidence(NumericEvidence.VBE));
+        //this.KS.insert(insertNewEvidence(NumericEvidence.VBB));
+        //this.KS.insert(insertNewEvidence(NumericEvidence.VCC));
+        //this.KS.insert(insertNewEvidence(NumericEvidence.IB));
+        //this.KS.insert(insertNewEvidence(NumericEvidence.IC));
+        //this.KS.insert(insertNewEvidence(NumericEvidence.BJT_GAIN));
     }
 
     /**
-     * Retrieve an Evidence to the inference engine
+     * Retrieve an NumericEvidence to the inference engine
      * @param ev NumericAlternative object
-     * @return Evidence
+     * @return NumericEvidence
      */
     @Override
-    public Evidence retrieveEvidence(NumericAlternative ev) {
+    public NumericEvidence retrieveEvidence(NumericAlternative ev) {
 
         @SuppressWarnings("unchecked")
-        Collection<Evidence> evidences = (Collection<Evidence>) this.KS.getObjects(new ClassObjectFilter(Evidence.class));
+        Collection<NumericEvidence> numericEvidences = (Collection<NumericEvidence>) this.KS.getObjects(new ClassObjectFilter(NumericEvidence.class));
         boolean questionFound = false;
-        Evidence evidence = null;
+        NumericEvidence numericEvidence = null;
 
-        //Search for the evidence on the work memory
-        for (Evidence e: evidences) {
+        //Search for the numericEvidence on the work memory
+        for (NumericEvidence e: numericEvidences) {
             if (e.getEvidence().getLabel().equals(ev.getLabel())) {
                 questionFound = true;
-                evidence = e;
+                numericEvidence = e;
                 return e;
             }
         }
 
-        Evidence e = insertNewEvidence(ev);
+        NumericEvidence e = insertNewNumericEvidence(ev);
 
         this.KS.insert(e);
 
@@ -119,7 +119,7 @@ public class ConsoleApp implements iRepository{
     /**
      * Retrieve an Preference to the inference engine
      * @param pref Preference
-     * @return Evidence
+     * @return NumericEvidence
      */
     @Override
     public Preference retrievePreference(String pref) {
@@ -161,25 +161,19 @@ public class ConsoleApp implements iRepository{
 
     /**
      * Creates new evidence in case it is not defined in Work Memory
-     * @param ev NumericAlternative object from Evidence class
+     * @param ev NumericAlternative object from NumericEvidence class
      * @return evidence if needs to be created
      */
-    @Override
-    public Evidence insertNewEvidence(NumericAlternative ev){
-        Evidence evidence;
+    public NumericEvidence insertNewNumericEvidence(NumericAlternative ev){
+        NumericEvidence numericEvidence;
 
-        if(ev.isNumeric()) {
-            NumericValue nv = readNumericValueFromConsole(ev.getLabel(), ev.getUnit());
-            evidence = new Evidence(ev, nv.getValueToHuman(), nv);
-        } else {
-            String value = readFromConsole(ev.getLabel());
-            evidence = new Evidence(ev, value);
-        }
+        NumericValue nv = readNumericValueFromConsole(ev.getLabel(), ev.getUnit());
+        numericEvidence = new NumericEvidence(ev, nv.getValueToHuman(), nv);
 
-        System.out.println(evidence.toString());
+        System.out.println(numericEvidence.toString());
         System.out.println(this.breakOutLine);
 
-        return evidence;
+        return numericEvidence;
     }
 
     /**
@@ -193,7 +187,7 @@ public class ConsoleApp implements iRepository{
         String value = (pref.isYesOrNo()) ? readYesOrNoFromConsole(pref.getLabel()) : readFromConsole(pref.getLabel());
         Preference preference = new Preference(pref, value);
 
-        System.out.println(preference.getPreference().toString());
+        System.out.println(preference.toString());
         System.out.println(this.breakOutLine);
 
         return preference;

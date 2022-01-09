@@ -52,20 +52,14 @@ public class TrackingAgendaEventListener extends DefaultAgendaEventListener{
         String ruleName = rule.getName();
         Map<String, Object> ruleMetaDataMap = rule.getMetaData();
 
-        //System.out.println("LHS:");
         List <Object> list = event.getMatch().getObjects();
         for (Object e : list) {
             if (e instanceof Fact) {
                 lhs.add((Fact)e);
             }
         }
-        for (Fact f : lhs) {
-            //System.out.println(f.getId() + ":" + f);
-        }
 
-        //System.out.println("RHS:");
         for (Fact f: rhs) {
-            //System.out.println(f.getId() + ":" + f);
             Justification j = new Justification(ruleName, lhs, f);
             this.justifications.put(f.getId(), j);
         }

@@ -25,6 +25,10 @@ query "Conclusions"
 	$conclusion : Conclusion()
 end
 
+query "numericEvidence"(String ev, String v)
+	e : NumericEvidence( numericValue == ev, value == v )
+end
+
 query "evidence"(String ev, String v)
 	e : Evidence( evidence == ev, value == v )
 end

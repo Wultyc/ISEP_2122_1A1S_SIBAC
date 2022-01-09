@@ -23,6 +23,6 @@ public class Preference extends Fact{
     }
 
     public String toString() {
-        return (preference + " = " + value);
+        return (preference + ": " + value);
     }
 }

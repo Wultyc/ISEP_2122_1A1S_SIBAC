@@ -5,6 +5,7 @@ import org.kie.api.runtime.KieSession;
 import pt.ipp.isep.dei.kbs.TrackingAgendaEventListener;
 import pt.ipp.isep.dei.math.Calculator;
 import pt.ipp.isep.dei.model.Evidence;
+import pt.ipp.isep.dei.model.NumericEvidence;
 import pt.ipp.isep.dei.model.Hypothesis;
 import pt.ipp.isep.dei.model.helpers.Multiplier;
 import pt.ipp.isep.dei.model.helpers.NumericAlternative;
@@ -13,7 +14,6 @@ import pt.ipp.isep.dei.repository.iRepository;
 import pt.ipp.isep.dei.Main;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 
 public class BTJStatus {
 
@@ -31,14 +31,16 @@ public class BTJStatus {
 
         Main.LOGGER.info("Starting testing Cut Over Zone");
 
-        Evidence VBB = this.repository.retrieveEvidence(Evidence.VBB);
-        Evidence VBE_ON = this.repository.retrieveEvidence(Evidence.VBE_ON);
+        NumericEvidence VBB = this.repository.retrieveEvidence(NumericEvidence.VBB);
+        NumericEvidence VBE_ON = this.repository.retrieveEvidence(NumericEvidence.VBE_ON);
 
         boolean validation = Calculator.lowerThan(VBB.getNormValue(), VBE_ON.getNormValue());
 
         if(validation) {
             this.agendaEventListener.addLhs(VBB);
             this.agendaEventListener.addLhs(VBE_ON);
+        } else {
+            this.KS.insert(new Evidence(Evidence.TBJ_IN_CUT_OVER_ZONE, "NO"));
         }
 
         Main.LOGGER.info("Cut Over Zone returned " + validation);
@@ -50,13 +52,13 @@ public class BTJStatus {
 
         Main.LOGGER.info("Starting testing Active Zone");
 
-        Evidence VCC = this.repository.retrieveEvidence(Evidence.VCC);
-        Evidence VBB = this.repository.retrieveEvidence(Evidence.VBB);
-        Evidence VBE = this.repository.retrieveEvidence(Evidence.VBE_ON);
-        Evidence RBB = this.repository.retrieveEvidence(Evidence.RBB);
-        Evidence RC = this.repository.retrieveEvidence(Evidence.RC);
-        Evidence RE = this.repository.retrieveEvidence(Evidence.RE);
-        Evidence beta = this.repository.retrieveEvidence(Evidence.BJT_GAIN);
+        NumericEvidence VCC = this.repository.retrieveEvidence(NumericEvidence.VCC);
+        NumericEvidence VBB = this.repository.retrieveEvidence(NumericEvidence.VBB);
+        NumericEvidence VBE = this.repository.retrieveEvidence(NumericEvidence.VBE_ON);
+        NumericEvidence RBB = this.repository.retrieveEvidence(NumericEvidence.RBB);
+        NumericEvidence RC = this.repository.retrieveEvidence(NumericEvidence.RC);
+        NumericEvidence RE = this.repository.retrieveEvidence(NumericEvidence.RE);
+        NumericEvidence beta = this.repository.retrieveEvidence(NumericEvidence.BJT_GAIN);
 
         boolean validation = false;
 
@@ -64,13 +66,13 @@ public class BTJStatus {
                 Calculator.subtract(VBB.getNormValue(),VBE.getNormValue()),
                 Calculator.sum(RBB.getNormValue(), Calculator.multiply(beta.getNormValue()), RE.getNormValue())
         );
-        Evidence IB = generateEvidence(ib, Evidence.IB);
+        NumericEvidence IB = generateEvidence(ib, NumericEvidence.IB);
 
         BigDecimal ic = Calculator.multiply(beta.getNormValue(), ib);
-        Evidence IC = generateEvidence(ic, Evidence.IC);
+        NumericEvidence IC = generateEvidence(ic, NumericEvidence.IC);
 
         BigDecimal vce = Calculator.subtract(VCC.getNormValue(), Calculator.multiply(ic, Calculator.sum(RC.getNormValue(), RE.getNormValue())));
-        Evidence VCE = generateEvidence(vce, Evidence.VCE);
+        NumericEvidence VCE = generateEvidence(vce, NumericEvidence.VCE);
 
         validation = Calculator.greaterThanOrEqual(VCC.getNormValue(),vce) && Calculator.greaterThanOrEqual(vce,VBE.getNormValue());
 
@@ -81,6 +83,8 @@ public class BTJStatus {
             this.agendaEventListener.addLhs(IB);
             this.agendaEventListener.addLhs(IC);
             this.agendaEventListener.addLhs(VCE);
+        } else {
+            this.KS.insert(new Evidence(Evidence.TBJ_IN_ACTIVE_ZONE, "NO"));
         }
 
         Main.LOGGER.info("Active Zone returned " + validation);
@@ -92,12 +96,12 @@ public class BTJStatus {
 
         Main.LOGGER.info("Starting testing Saturation Zone");
 
-        Evidence VCC = this.repository.retrieveEvidence(Evidence.VCC);
-        Evidence VBB = this.repository.retrieveEvidence(Evidence.VBB);
-        Evidence VBE = this.repository.retrieveEvidence(Evidence.VBE_ON);
-        Evidence RBB = this.repository.retrieveEvidence(Evidence.RBB);
-        Evidence RC = this.repository.retrieveEvidence(Evidence.RC);
-        Evidence RE = this.repository.retrieveEvidence(Evidence.RE);
+        NumericEvidence VCC = this.repository.retrieveEvidence(NumericEvidence.VCC);
+        NumericEvidence VBB = this.repository.retrieveEvidence(NumericEvidence.VBB);
+        NumericEvidence VBE = this.repository.retrieveEvidence(NumericEvidence.VBE_ON);
+        NumericEvidence RBB = this.repository.retrieveEvidence(NumericEvidence.RBB);
+        NumericEvidence RC = this.repository.retrieveEvidence(NumericEvidence.RC);
+        NumericEvidence RE = this.repository.retrieveEvidence(NumericEvidence.RE);
 
         BigDecimal ten = new BigDecimal("10");
         BigDecimal zero = new BigDecimal("0");
@@ -137,13 +141,15 @@ public class BTJStatus {
         }
 
         if(validation) {
-            Evidence IB = generateEvidence(ibCopy, Evidence.IB);
-            Evidence IC = generateEvidence(icCopy, Evidence.IC);
+            NumericEvidence IB = generateEvidence(ibCopy, NumericEvidence.IB);
+            NumericEvidence IC = generateEvidence(icCopy, NumericEvidence.IC);
 
             this.KS.insert(IB);
             this.KS.insert(IC);
             this.agendaEventListener.addLhs(IB);
             this.agendaEventListener.addLhs(IC);
+        } else {
+            this.KS.insert(new Evidence(Evidence.TBJ_IN_SATURATION_ZONE, "NO"));
         }
 
         Main.LOGGER.info("Saturation Zone returned " + validation);
@@ -168,11 +174,11 @@ public class BTJStatus {
         this.KS.insert(newHypothesis);
     }
 
-    private Evidence generateEvidence(BigDecimal value, NumericAlternative alternative){
+    private NumericEvidence generateEvidence(BigDecimal value, NumericAlternative alternative){
         NumericValue tmpNV = new NumericValue(value, new Multiplier(), alternative.getUnit());
 
         tmpNV.applyBestMultiplier();
 
-        return new Evidence(alternative, tmpNV.getValueToHuman(), tmpNV);
+        return new NumericEvidence(alternative, tmpNV.getValueToHuman(), tmpNV);
     }
 }
