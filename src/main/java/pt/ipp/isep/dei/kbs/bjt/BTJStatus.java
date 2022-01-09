@@ -40,6 +40,13 @@ public class BTJStatus {
         NumericEvidence VBB = this.repository.retrieveEvidence(NumericEvidence.VBB);
         NumericEvidence VBE_ON = this.repository.retrieveEvidence(NumericEvidence.VBE_ON);
 
+        if(Calculator.equal(VBB.getNormValue(), VBE_ON.getNormValue())){
+            logger.info("The value for VBB is the same of VBE On. Is not possible to have a conclusion.");
+            Conclusion c = new Conclusion(Conclusion.ZONE_CUT_OVER_VBB_EQUALS_VBE_ON);
+            this.KS.insert(c);
+            return false;
+        }
+
         boolean validation = Calculator.lowerThan(VBB.getNormValue(), VBE_ON.getNormValue());
 
         if(validation) {
