@@ -40,6 +40,7 @@ public class BTJStatus {
         NumericEvidence VBB = this.repository.retrieveEvidence(NumericEvidence.VBB);
         NumericEvidence VBE_ON = this.repository.retrieveEvidence(NumericEvidence.VBE_ON);
 
+        //Check the uncertain zone
         if(Calculator.equal(VBB.getNormValue(), VBE_ON.getNormValue())){
             logger.info("The value for VBB is the same of VBE On. Is not possible to have a conclusion.");
             Conclusion c = new Conclusion(Conclusion.ZONE_CUT_OVER_VBB_EQUALS_VBE_ON);
@@ -79,7 +80,7 @@ public class BTJStatus {
 
         BigDecimal ib = Calculator.fraction(
                 Calculator.subtract(VBB.getNormValue(),VBE.getNormValue()),
-                Calculator.sum(RBB.getNormValue(), Calculator.multiply(beta.getNormValue()), RE.getNormValue())
+                Calculator.sum(RBB.getNormValue(), Calculator.multiply(beta.getNormValue(), RE.getNormValue()))
         );
         NumericEvidence IB = generateEvidence(ib, NumericEvidence.IB);
 
@@ -104,6 +105,15 @@ public class BTJStatus {
             this.agendaEventListener.addLhs(IB);
             this.agendaEventListener.addLhs(IC);
             this.agendaEventListener.addLhs(VCE);
+
+            //Check the uncertain zone
+            if(Calculator.equal(VCE.getNormValue(), VBE.getNormValue())){
+                logger.info("The value for VCE is the same of VBE On. Is not possible to have a conclusion.");
+                Conclusion c = new Conclusion(Conclusion.ZONE_ACTIVE_VCE_EQUALS_VBE_ON);
+                this.KS.insert(c);
+                return false;
+            }
+
         } else {
             this.KS.insert(new Evidence(Evidence.TBJ_IN_ACTIVE_ZONE, "NO"));
         }

@@ -69,22 +69,31 @@ public class ConsoleApp implements iRepository{
         //Load preferences
         this.KS.insert(insertNewPreference(Preference.ENABLE_GUIDED_MODE));
 
-        ////Load default hypothesis
-        //this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_ACTIVE));
-        //this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER));
-        //this.KS.insert(new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_SATURATION));
+        //TODO
+        // - Use this code for Unit Testing Active Zone
 
-        ////Load values from problem
-        //this.KS.insert(insertNewEvidence(NumericEvidence.RC));
-        //this.KS.insert(insertNewEvidence(NumericEvidence.RE));
-        //this.KS.insert(insertNewEvidence(NumericEvidence.RBB));
-        //this.KS.insert(insertNewEvidence(NumericEvidence.VCE));
-        //this.KS.insert(insertNewEvidence(NumericEvidence.VBE));
-        //this.KS.insert(insertNewEvidence(NumericEvidence.VBB));
-        //this.KS.insert(insertNewEvidence(NumericEvidence.VCC));
-        //this.KS.insert(insertNewEvidence(NumericEvidence.IB));
-        //this.KS.insert(insertNewEvidence(NumericEvidence.IC));
-        //this.KS.insert(insertNewEvidence(NumericEvidence.BJT_GAIN));
+        //Multipliers
+        //Multiplier fu = new Multiplier();
+        //Multiplier k = new Multiplier("k", "k", "k", new BigDecimal("1000"));
+
+        //////Load values from problem
+        //NumericValue nvRC = new NumericValue(new BigDecimal("5"), k, Units.Ω);
+        //this.KS.insert(new NumericEvidence(NumericEvidence.RC, nvRC.getValueToHuman(), nvRC));
+
+        //NumericValue nvRE = new NumericValue(new BigDecimal("1"), k, Units.Ω);
+        //this.KS.insert(new NumericEvidence(NumericEvidence.RE, nvRE.getValueToHuman(), nvRE));
+
+        //NumericValue nvRBB = new NumericValue(new BigDecimal("1.8"), k, Units.Ω);
+        //this.KS.insert(new NumericEvidence(NumericEvidence.RBB, nvRBB.getValueToHuman(), nvRBB));
+
+        //NumericValue nvVBB = new NumericValue(new BigDecimal("2.7"), fu, Units.V);
+        //this.KS.insert(new NumericEvidence(NumericEvidence.VBB, nvVBB.getValueToHuman(), nvVBB));
+
+        //NumericValue nvVCC = new NumericValue(new BigDecimal("15"), fu, Units.V);
+        //this.KS.insert(new NumericEvidence(NumericEvidence.VCC,nvVCC.getValueToHuman(), nvVCC ));
+
+        //NumericValue nvBJT_GAIN = new NumericValue(new BigDecimal("150"), fu, null);
+        //this.KS.insert(new NumericEvidence(NumericEvidence.BJT_GAIN, nvBJT_GAIN.getValueToHuman(), nvBJT_GAIN));
     }
 
     /**

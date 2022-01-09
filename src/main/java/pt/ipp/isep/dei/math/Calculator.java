@@ -34,10 +34,10 @@ public class Calculator {
 
     public static BigDecimal subtract(BigDecimal ... bds){
 
-        BigDecimal res = new BigDecimal("0");
+        BigDecimal res = null;
 
         for (BigDecimal bd : bds) {
-            res = res.subtract(bd);
+            res = (res == null) ? bd : res.subtract(bd);
         }
 
         return res;
@@ -56,10 +56,10 @@ public class Calculator {
 
     public static BigDecimal divide(BigDecimal ... bds){
 
-        BigDecimal res = new BigDecimal("1");
+        BigDecimal res = null;
 
         for (BigDecimal bd : bds) {
-            res = res.divide(bd, Calculator.mc);
+            res = (res == null) ? bd : res.divide(bd, Calculator.mc);
         }
 
         return res;
