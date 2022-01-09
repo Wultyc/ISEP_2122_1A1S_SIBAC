@@ -51,7 +51,7 @@ public class BTJStatus {
         return validation;
     }
 
-    public boolean testActiveZone(){
+    public boolean testActiveZone(Hypothesis h){
 
         Main.LOGGER.info("Starting testing Active Zone");
 
@@ -90,12 +90,14 @@ public class BTJStatus {
             this.KS.insert(new Evidence(Evidence.TBJ_IN_ACTIVE_ZONE, "NO"));
         }
 
+        h.setStatus(Status.Inactive);
+
         Main.LOGGER.info("Active Zone returned " + validation);
 
         return validation;
     }
 
-    public boolean testSaturationZone(){
+    public boolean testSaturationZone(Hypothesis h){
 
         Main.LOGGER.info("Starting testing Saturation Zone");
 
@@ -154,6 +156,8 @@ public class BTJStatus {
         } else {
             this.KS.insert(new Evidence(Evidence.TBJ_IN_SATURATION_ZONE, "NO"));
         }
+
+        h.setStatus(Status.Inactive);
 
         Main.LOGGER.info("Saturation Zone returned " + validation);
 
