@@ -17,7 +17,7 @@ public interface iRepository {
 
     NumericEvidence retrieveEvidence(NumericAlternative ev);
 
-    Preference retrievePreference(String pref);
+    Preference retrievePreference(Alternative pref);
 
     Hypothesis chooseNewHypothesis();
 

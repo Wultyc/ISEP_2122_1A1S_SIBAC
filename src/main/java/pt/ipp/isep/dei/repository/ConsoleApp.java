@@ -67,7 +67,7 @@ public class ConsoleApp implements iRepository{
         this.KS.insert(e_vb_on);
 
         //Load preferences
-        this.KS.insert(insertNewPreference(Preference.ENABLE_GUIDED_MODE));
+        this.KS.insert(retrievePreference(Preference.ENABLE_GUIDED_MODE));
 
         //TODO
         // - Use this code for Unit Testing Active Zone
@@ -103,17 +103,12 @@ public class ConsoleApp implements iRepository{
      */
     @Override
     public NumericEvidence retrieveEvidence(NumericAlternative ev) {
-
         @SuppressWarnings("unchecked")
         Collection<NumericEvidence> numericEvidences = (Collection<NumericEvidence>) this.KS.getObjects(new ClassObjectFilter(NumericEvidence.class));
-        boolean questionFound = false;
-        NumericEvidence numericEvidence = null;
 
         //Search for the numericEvidence on the work memory
         for (NumericEvidence e: numericEvidences) {
             if (e.getEvidence().getLabel().equals(ev.getLabel())) {
-                questionFound = true;
-                numericEvidence = e;
                 return e;
             }
         }
@@ -131,8 +126,21 @@ public class ConsoleApp implements iRepository{
      * @return NumericEvidence
      */
     @Override
-    public Preference retrievePreference(String pref) {
-        return null;
+    public Preference retrievePreference(Alternative pref) {
+        Collection<Preference> preferences = (Collection<Preference>) this.KS.getObjects(new ClassObjectFilter(Preference.class));
+
+        //Search for the numericEvidence on the work memory
+        for (Preference p: preferences) {
+            if (p.getPreference().getLabel().equals(pref.getLabel())) {
+                return p;
+            }
+        }
+
+        Preference p = insertNewPreference(pref);
+
+        this.KS.insert(p);
+
+        return p;
     }
 
     /**
