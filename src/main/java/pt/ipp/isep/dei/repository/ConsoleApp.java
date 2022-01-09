@@ -193,6 +193,11 @@ public class ConsoleApp implements iRepository{
         return preference;
     }
 
+    @Override
+    public void listAllFacts() throws Exception {
+        throw new Exception("Method not implemented");
+    }
+
     /**
      * Reads a Numeric value from console
      * @param message message to be presented to the user

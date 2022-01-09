@@ -9,6 +9,8 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.runtime.rule.Match;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.ipp.isep.dei.model.Fact;
 import pt.ipp.isep.dei.model.Justification;
 
@@ -19,8 +21,12 @@ public class TrackingAgendaEventListener extends DefaultAgendaEventListener{
     private List<Fact> lhs = new ArrayList<Fact>();
     private List<Fact> rhs = new ArrayList<Fact>();
 
+    private static Logger logger = LoggerFactory.getLogger(TrackingAgendaEventListener.class);
+
     public TrackingAgendaEventListener(Map<Integer, Justification> justifications) {
         this.justifications = justifications;
+
+        logger.info("Starting Tracking Agenda Event Listener");
     }
 
     public void resetLhs() {
@@ -52,6 +58,8 @@ public class TrackingAgendaEventListener extends DefaultAgendaEventListener{
         String ruleName = rule.getName();
         Map<String, Object> ruleMetaDataMap = rule.getMetaData();
 
+        logger.info("Match on rule '{}'", ruleName);
+
         List <Object> list = event.getMatch().getObjects();
         for (Object e : list) {
             if (e instanceof Fact) {
@@ -64,10 +72,13 @@ public class TrackingAgendaEventListener extends DefaultAgendaEventListener{
             this.justifications.put(f.getId(), j);
         }
 
+        logger.info("Justification for rule '{}' stored", ruleName);
+
         resetLhs();
         resetRhs();
 
         matchList.add(event.getMatch());
+        /*
         StringBuilder sb = new StringBuilder();
         sb.append("Rule fired: " + ruleName);
 
@@ -79,5 +90,6 @@ public class TrackingAgendaEventListener extends DefaultAgendaEventListener{
         }
 
         //System.out.println(sb.toString());
+         */
     }
 }

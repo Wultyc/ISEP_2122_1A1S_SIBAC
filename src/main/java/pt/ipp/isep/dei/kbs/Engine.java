@@ -5,6 +5,9 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.LiveQuery;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import pt.ipp.isep.dei.Main;
 import pt.ipp.isep.dei.kbs.bjt.BTJStatus;
 import pt.ipp.isep.dei.model.Justification;
 import pt.ipp.isep.dei.repository.ConsoleApp;
@@ -21,7 +24,11 @@ public class Engine {
     private iRepository repository;
     private BTJStatus btjStatus;
 
+    private static Logger logger = LoggerFactory.getLogger(Engine.class);
+
     public Engine(){
+        logger.info("Starting KBS Engine");
+
         //Create Justifications structure
         this.justifications = new TreeMap<Integer, Justification>();
 
@@ -42,9 +49,13 @@ public class Engine {
 
         //Load BTJStatus
         this.btjStatus = new BTJStatus(this.KS, this.agendaEventListener, this.repository);
+
+        logger.info("KBS Engine ready");
     }
 
     public void runEngine(){
+        logger.info("KBS Engine running");
+
         //Load work memory
         loadWorkMemory();
 
@@ -59,7 +70,7 @@ public class Engine {
         this.query.close();
         this.repository.close();
 
-        System.out.println("close engine");
+        logger.info("KBS Engine closing");
     }
 
     private void loadWorkMemory(){

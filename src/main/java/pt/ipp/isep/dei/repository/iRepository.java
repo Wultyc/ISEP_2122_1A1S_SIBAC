@@ -25,4 +25,6 @@ public interface iRepository {
 
     Preference insertNewPreference(Alternative pref);
 
+    void listAllFacts() throws Exception;
+
 }

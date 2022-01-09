@@ -2,6 +2,8 @@ package pt.ipp.isep.dei.kbs;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.ipp.isep.dei.model.Fact;
 import pt.ipp.isep.dei.model.Hypothesis;
 import pt.ipp.isep.dei.model.Justification;
@@ -9,18 +11,26 @@ import pt.ipp.isep.dei.model.Justification;
 public class How {
     private Map<Integer, Justification> justifications;
 
+    private static Logger logger = LoggerFactory.getLogger(How.class);
+
     public How(Map<Integer, Justification> justifications) {
         this.justifications = justifications;
     }
 
     public String getHowExplanation(Integer factNumber) {
-        return (getHowExplanation(factNumber, 0));
+        logger.info("Start getting explanations from execution");
+        String explanation = (getHowExplanation(factNumber, 0));
+        logger.info("Explanations ready");
+        return explanation;
     }
 
     private String getHowExplanation(Integer factNumber, int level) {
         StringBuilder sb = new StringBuilder();
         Justification j = justifications.get(factNumber);
         if (j != null) { // justification for Fact factNumber was found
+
+            logger.info("Getting justifications for {}",j.getRuleName());
+
             sb.append(getIdentation(level));
 
             //Write the conclusions

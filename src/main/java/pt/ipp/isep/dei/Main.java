@@ -16,6 +16,8 @@ public class Main {
 
     public static void main(String[] args) {
 
+        logger.info("Application started");
+
         kbsEngine = new Engine();
 
         //FIXME:
@@ -28,6 +30,8 @@ public class Main {
         } catch (Throwable t) {
             t.printStackTrace();
         }
+
+        logger.info("Closing application");
     }
 
 }

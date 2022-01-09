@@ -122,7 +122,7 @@ end
 rule "R8: Guided mode and hypothesis 'in in cutover' rejected"
 	when
 		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, hypothesisPhase == HypothesisPhase.Rejected)
+		Evidence( evidence == Evidence.TBJ_IN_CUT_OVER_ZONE, value == "NO")
 	then
 	    Hypothesis h = new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_ACTIVE);
 		h.setHypothesisPhase(HypothesisPhase.In_Test);
@@ -135,8 +135,8 @@ end
 rule "R9: Guided mode and hypothesis 'in in cutover' and hypothesis 'in in active' rejected"
 	when
 		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, hypothesisPhase == HypothesisPhase.Rejected)
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, hypothesisPhase == HypothesisPhase.Rejected)
+		Evidence( evidence == Evidence.TBJ_IN_CUT_OVER_ZONE, value == "NO")
+		Evidence( evidence == Evidence.TBJ_IN_ACTIVE_ZONE, value == "NO")
 	then
 	    Conclusion c = new Conclusion(Conclusion.ZONE_SATURATION);
         insert(c);
