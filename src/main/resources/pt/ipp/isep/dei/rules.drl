@@ -17,7 +17,8 @@ package pt.ipp.isep.dei;
 
 import pt.ipp.isep.dei.model.*;
 import pt.ipp.isep.dei.model.helpers.*;
-import pt.ipp.isep.dei.kbs.bjt.*;
+import pt.ipp.isep.dei.kbs.bjt.*
+import pt.ipp.isep.dei.model.helpers.HypothesisPhase;
 
 global pt.ipp.isep.dei.kbs.bjt.BTJStatus btjStatus;
 
@@ -38,11 +39,16 @@ end
  */
 rule "R1: Test hypothesis 'in in cutover'"
 	when
-		$h : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.In_Test)
+		$h : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, hypothesisPhase == HypothesisPhase.In_Test)
 	then
+	    /*
 		modify($h){
-            setStatus(btjStatus.testCutOverZone() ? Status.Accepted : Status.Rejected)
+            setStatus(btjStatus.testCutOverZone() ? HypothesisPhase.Accepted : HypothesisPhase.Rejected)
         }
+        */
+        Hypothesis h = new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER);
+        h.setHypothesisPhase(btjStatus.testCutOverZone() ? HypothesisPhase.Accepted : HypothesisPhase.Rejected);
+        insert(h);
 end
 
 /**
@@ -50,7 +56,7 @@ end
  */
 rule "R2: Hypothesis 'in cutover' accepted"
 	when
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Accepted)
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, hypothesisPhase == HypothesisPhase.Accepted)
 	then
 		Conclusion c = new Conclusion(Conclusion.ZONE_CUTOVER);
         insert(c);
@@ -61,10 +67,10 @@ end
  */
 rule "R3: Test hypothesis 'in in active'"
 	when
-		$h : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, status == Status.In_Test)
+		$h : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, hypothesisPhase == HypothesisPhase.In_Test)
 	then
 		modify($h){
-            setStatus(btjStatus.testActiveZone() ? Status.Accepted : Status.Rejected)
+            setHypothesisPhase(btjStatus.testActiveZone() ? HypothesisPhase.Accepted : HypothesisPhase.Rejected)
         }
 end
 
@@ -73,7 +79,7 @@ end
  */
 rule "R4: Hypothesis 'in in active' accepted"
 	when
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, status == Status.Accepted)
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, hypothesisPhase == HypothesisPhase.Accepted)
 	then
 		Conclusion c = new Conclusion(Conclusion.ZONE_ACTIVE);
         insert(c);
@@ -84,10 +90,10 @@ end
  */
 rule "R5: Test hypothesis 'in in saturation'"
 	when
-		$h : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_SATURATION, status == Status.In_Test)
+		$h : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_SATURATION, hypothesisPhase == HypothesisPhase.In_Test)
 	then
 		modify($h){
-            setStatus(btjStatus.testSaturationZone() ? Status.Accepted : Status.Rejected)
+            setHypothesisPhase(btjStatus.testSaturationZone() ? HypothesisPhase.Accepted : HypothesisPhase.Rejected)
         }
 end
 
@@ -96,7 +102,7 @@ end
  */
 rule "R6: Hypothesis 'in in saturation' accepted"
 	when
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_SATURATION, status == Status.Accepted)
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_SATURATION, hypothesisPhase == HypothesisPhase.Accepted)
 	then
 		Conclusion c = new Conclusion(Conclusion.ZONE_SATURATION);
         insert(c);
@@ -111,7 +117,7 @@ rule "R7: Guided mode and no hypothesis"
 		eval(btjStatus.countNrFacts(Hypothesis.class) == 0)
 	then
 	    Hypothesis h = new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER);
-		h.setStatus(Status.In_Test);
+		h.setHypothesisPhase(HypothesisPhase.In_Test);
 		insert(h);
 end
 
@@ -121,10 +127,10 @@ end
 rule "R8: Guided mode and hypothesis 'in in cutover' rejected"
 	when
 		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Rejected)
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, hypothesisPhase == HypothesisPhase.Rejected)
 	then
 	    Hypothesis h = new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_ACTIVE);
-		h.setStatus(Status.In_Test);
+		h.setHypothesisPhase(HypothesisPhase.In_Test);
 		insert(h);
 end
 
@@ -134,8 +140,8 @@ end
 rule "R9: Guided mode and hypothesis 'in in cutover' and hypothesis 'in in active' rejected"
 	when
 		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, status == Status.Rejected)
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, status == Status.Rejected)
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, hypothesisPhase == HypothesisPhase.Rejected)
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_ACTIVE, hypothesisPhase == HypothesisPhase.Rejected)
 	then
 	    Conclusion c = new Conclusion(Conclusion.ZONE_SATURATION);
         insert(c);

@@ -1,6 +1,7 @@
 package pt.ipp.isep.dei.model;
 
 import pt.ipp.isep.dei.Main;
+import pt.ipp.isep.dei.model.helpers.HypothesisPhase;
 import pt.ipp.isep.dei.model.helpers.Status;
 
 public class Hypothesis extends Fact{
@@ -11,6 +12,7 @@ public class Hypothesis extends Fact{
 
     private String description;
     private String value;
+    private HypothesisPhase hypothesisPhase;
     private Status status;
 
     public Hypothesis(String description, String value) {
@@ -27,15 +29,15 @@ public class Hypothesis extends Fact{
         return value;
     }
 
-    public Status getStatus() { return status; }
+    public HypothesisPhase getHypothesisPhase() { return hypothesisPhase; }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setHypothesisPhase(HypothesisPhase hypothesisPhase) {
+        this.hypothesisPhase = hypothesisPhase;
         Main.agendaEventListener.addRhs(this);
     }
 
     public String toString() {
-        return ( "Hypothesis '" + description + " is " + value + " is " + status);
+        return ( "Hypothesis '" + description + " is " + value + " is " + hypothesisPhase);
     }
 }
 
