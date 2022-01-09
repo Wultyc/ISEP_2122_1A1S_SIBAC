@@ -2,8 +2,11 @@ package pt.ipp.isep.dei.kbs.bjt;
 
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.ipp.isep.dei.kbs.TrackingAgendaEventListener;
 import pt.ipp.isep.dei.math.Calculator;
+import pt.ipp.isep.dei.model.Conclusion;
 import pt.ipp.isep.dei.model.Evidence;
 import pt.ipp.isep.dei.model.NumericEvidence;
 import pt.ipp.isep.dei.model.Hypothesis;
@@ -22,6 +25,8 @@ public class BTJStatus {
     private TrackingAgendaEventListener agendaEventListener;
     private iRepository repository;
 
+    private static Logger logger = LoggerFactory.getLogger(BTJStatus.class);
+
     public BTJStatus(KieSession KS, TrackingAgendaEventListener agendaEventListener, iRepository repository) {
         this.KS = KS;
         this.agendaEventListener = agendaEventListener;
@@ -30,7 +35,7 @@ public class BTJStatus {
 
     public boolean testCutOverZone(Hypothesis h){
 
-        Main.LOGGER.info("Starting testing Cut Over Zone");
+        logger.info("Starting testing Cut Over Zone");
 
         NumericEvidence VBB = this.repository.retrieveEvidence(NumericEvidence.VBB);
         NumericEvidence VBE_ON = this.repository.retrieveEvidence(NumericEvidence.VBE_ON);
@@ -46,14 +51,14 @@ public class BTJStatus {
 
         h.setStatus(Status.Inactive);
 
-        Main.LOGGER.info("Cut Over Zone returned " + validation);
+        logger.info("Cut Over Zone returned {}", validation);
 
         return validation;
     }
 
     public boolean testActiveZone(Hypothesis h){
 
-        Main.LOGGER.info("Starting testing Active Zone");
+        logger.info("Starting testing Active Zone");
 
         NumericEvidence VCC = this.repository.retrieveEvidence(NumericEvidence.VCC);
         NumericEvidence VBB = this.repository.retrieveEvidence(NumericEvidence.VBB);
@@ -71,11 +76,17 @@ public class BTJStatus {
         );
         NumericEvidence IB = generateEvidence(ib, NumericEvidence.IB);
 
+        logger.info("{}", IB);
+
         BigDecimal ic = Calculator.multiply(beta.getNormValue(), ib);
         NumericEvidence IC = generateEvidence(ic, NumericEvidence.IC);
 
+        logger.info("{}", IC);
+
         BigDecimal vce = Calculator.subtract(VCC.getNormValue(), Calculator.multiply(ic, Calculator.sum(RC.getNormValue(), RE.getNormValue())));
         NumericEvidence VCE = generateEvidence(vce, NumericEvidence.VCE);
+
+        logger.info("{}", VCE);
 
         validation = Calculator.greaterThanOrEqual(VCC.getNormValue(),vce) && Calculator.greaterThanOrEqual(vce,VBE.getNormValue());
 
@@ -92,14 +103,14 @@ public class BTJStatus {
 
         h.setStatus(Status.Inactive);
 
-        Main.LOGGER.info("Active Zone returned " + validation);
+        logger.info("Active Zone returned {}", validation);
 
         return validation;
     }
 
     public boolean testSaturationZone(Hypothesis h){
 
-        Main.LOGGER.info("Starting testing Saturation Zone");
+        logger.info("Starting testing Saturation Zone");
 
         NumericEvidence VCC = this.repository.retrieveEvidence(NumericEvidence.VCC);
         NumericEvidence VBB = this.repository.retrieveEvidence(NumericEvidence.VBB);
@@ -159,16 +170,14 @@ public class BTJStatus {
 
         h.setStatus(Status.Inactive);
 
-        Main.LOGGER.info("Saturation Zone returned " + validation);
+        logger.info("Saturation Zone returned {}", validation);
 
         return validation;
     }
 
     public boolean hasMoreHypothesisToTest(){
         int count = countNrFacts(Hypothesis.class);
-
-        Main.LOGGER.info("Where tested already " + count + " Hypothesis");
-
+        logger.info("Where tested already {} Hypothesis",count);
         return count < 3;
     }
 
@@ -178,6 +187,7 @@ public class BTJStatus {
 
     public void chooseNewHypothesis(){
         Hypothesis newHypothesis = this.repository.chooseNewHypothesis();
+        logger.info("User selected Hypothesis {}:{}",newHypothesis.getDescription(), newHypothesis.getValue());
         this.KS.insert(newHypothesis);
     }
 

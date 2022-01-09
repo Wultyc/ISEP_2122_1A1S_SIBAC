@@ -53,7 +53,7 @@ rule "R2: Hypothesis 'in cutover' accepted"
 	when
 		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, hypothesisPhase == HypothesisPhase.Accepted)
 	then
-		Conclusion c = new Conclusion(Conclusion.ZONE_CUTOVER);
+		Conclusion c = new Conclusion(Conclusion.ZONE_CUT_OVER);
         insert(c);
 end
 

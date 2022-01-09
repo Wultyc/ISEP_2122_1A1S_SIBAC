@@ -12,7 +12,7 @@ public class Main {
     public static TrackingAgendaEventListener agendaEventListener;
     public static final  MathContext mc = new MathContext(5);
 
-    public static Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    private static Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
 
