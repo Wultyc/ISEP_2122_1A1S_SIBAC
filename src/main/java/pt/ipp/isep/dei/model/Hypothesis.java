@@ -18,6 +18,16 @@ public class Hypothesis extends Fact{
     public Hypothesis(String description, String value) {
         this.description = description;
         this.value = value;
+        this.hypothesisPhase = HypothesisPhase.Proposed;
+        this.status = Status.Active;
+        Main.agendaEventListener.addRhs(this);
+    }
+
+    public Hypothesis(String description, String value, HypothesisPhase hypothesisPhase) {
+        this.description = description;
+        this.value = value;
+        this.hypothesisPhase = hypothesisPhase;
+        this.status = Status.Active;
         Main.agendaEventListener.addRhs(this);
     }
 
@@ -34,6 +44,14 @@ public class Hypothesis extends Fact{
     public void setHypothesisPhase(HypothesisPhase hypothesisPhase) {
         this.hypothesisPhase = hypothesisPhase;
         Main.agendaEventListener.addRhs(this);
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public String toString() {

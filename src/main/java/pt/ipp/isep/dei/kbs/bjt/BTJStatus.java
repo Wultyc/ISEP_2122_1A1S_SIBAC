@@ -10,6 +10,7 @@ import pt.ipp.isep.dei.model.Hypothesis;
 import pt.ipp.isep.dei.model.helpers.Multiplier;
 import pt.ipp.isep.dei.model.helpers.NumericAlternative;
 import pt.ipp.isep.dei.model.helpers.NumericValue;
+import pt.ipp.isep.dei.model.helpers.Status;
 import pt.ipp.isep.dei.repository.iRepository;
 import pt.ipp.isep.dei.Main;
 
@@ -27,7 +28,7 @@ public class BTJStatus {
         this.repository = repository;
     }
 
-    public boolean testCutOverZone(){
+    public boolean testCutOverZone(Hypothesis h){
 
         Main.LOGGER.info("Starting testing Cut Over Zone");
 
@@ -42,6 +43,8 @@ public class BTJStatus {
         } else {
             this.KS.insert(new Evidence(Evidence.TBJ_IN_CUT_OVER_ZONE, "NO"));
         }
+
+        h.setStatus(Status.Inactive);
 
         Main.LOGGER.info("Cut Over Zone returned " + validation);
 

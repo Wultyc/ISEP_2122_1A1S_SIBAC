@@ -40,14 +40,9 @@ end
 rule "R1: Test hypothesis 'in in cutover'"
 	when
 		$h : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, hypothesisPhase == HypothesisPhase.In_Test)
+		eval(btjStatus.testCutOverZone($h))
 	then
-	    /*
-		modify($h){
-            setStatus(btjStatus.testCutOverZone() ? HypothesisPhase.Accepted : HypothesisPhase.Rejected)
-        }
-        */
-        Hypothesis h = new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER);
-        h.setHypothesisPhase(btjStatus.testCutOverZone() ? HypothesisPhase.Accepted : HypothesisPhase.Rejected);
+        Hypothesis h = new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER, HypothesisPhase.Accepted);
         insert(h);
 end
 
