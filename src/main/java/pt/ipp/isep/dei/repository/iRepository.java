@@ -27,4 +27,6 @@ public interface iRepository {
 
     void listAllFacts() throws Exception;
 
+    void printMessage(String message);
+
 }

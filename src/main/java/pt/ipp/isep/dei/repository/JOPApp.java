@@ -1,32 +1,36 @@
 package pt.ipp.isep.dei.repository;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.util.*;
-
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.ipp.isep.dei.kbs.TrackingAgendaEventListener;
-import pt.ipp.isep.dei.model.*;
+import pt.ipp.isep.dei.model.Hypothesis;
+import pt.ipp.isep.dei.model.NumericEvidence;
+import pt.ipp.isep.dei.model.Preference;
 import pt.ipp.isep.dei.model.helpers.*;
 
-public class ConsoleApp implements iRepository{
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JOptionPane;
+
+public class JOPApp implements iRepository{
 
     private KieSession KS;
     private TrackingAgendaEventListener agendaEventListener;
 
-    private BufferedReader br;
     private List<Multiplier> listOfMultipliers;
     private Multiplier fundamentalUnitMultiplier;
-    private String listOfMultipliersStr;
 
-    private final String breakOutLine;
+    private String windowTitle = "BTJ Status";
 
-    public ConsoleApp(){
-        this.breakOutLine = new String(new char[100]).replace("\0", "=");
+    private static Logger logger = LoggerFactory.getLogger(JOPApp.class);
+
+    public JOPApp(){
+
     }
 
     /** Initiates the objects required for this repository to work properly
@@ -34,10 +38,8 @@ public class ConsoleApp implements iRepository{
      * @param agendaEventListener
      */
     public void init(KieSession KS, TrackingAgendaEventListener agendaEventListener){
-        br = new BufferedReader(new InputStreamReader(System.in));
         this.listOfMultipliers = Multiplier.getDefaultListOfMultipliers();
-        this.listOfMultipliersStr = this.processListOfMultipliers();
-
+        this.fundamentalUnitMultiplier = new Multiplier("Fundamental Unit", "","", new BigDecimal(1));
         this.KS = KS;
         this.agendaEventListener = agendaEventListener;
     }
@@ -47,13 +49,7 @@ public class ConsoleApp implements iRepository{
      */
     @Override
     public void close() {
-        if (br != null) {
-            try {
-                br.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+
     }
 
     /**
@@ -67,33 +63,7 @@ public class ConsoleApp implements iRepository{
         this.KS.insert(e_vb_on);
 
         //Load preferences
-        this.KS.insert(retrievePreference(Preference.ENABLE_GUIDED_MODE));
-
-        //TODO
-        // - Use this code for Unit Testing Active Zone
-
-        //Multipliers
-        //Multiplier fu = new Multiplier();
-        //Multiplier k = new Multiplier("k", "k", "k", new BigDecimal("1000"));
-
-        //////Load values from problem
-        //NumericValue nvRC = new NumericValue(new BigDecimal("5"), k, Units.Ω);
-        //this.KS.insert(new NumericEvidence(NumericEvidence.RC, nvRC.getValueToHuman(), nvRC));
-
-        //NumericValue nvRE = new NumericValue(new BigDecimal("1"), k, Units.Ω);
-        //this.KS.insert(new NumericEvidence(NumericEvidence.RE, nvRE.getValueToHuman(), nvRE));
-
-        //NumericValue nvRBB = new NumericValue(new BigDecimal("1.8"), k, Units.Ω);
-        //this.KS.insert(new NumericEvidence(NumericEvidence.RBB, nvRBB.getValueToHuman(), nvRBB));
-
-        //NumericValue nvVBB = new NumericValue(new BigDecimal("2.7"), fu, Units.V);
-        //this.KS.insert(new NumericEvidence(NumericEvidence.VBB, nvVBB.getValueToHuman(), nvVBB));
-
-        //NumericValue nvVCC = new NumericValue(new BigDecimal("15"), fu, Units.V);
-        //this.KS.insert(new NumericEvidence(NumericEvidence.VCC,nvVCC.getValueToHuman(), nvVCC ));
-
-        //NumericValue nvBJT_GAIN = new NumericValue(new BigDecimal("150"), fu, null);
-        //this.KS.insert(new NumericEvidence(NumericEvidence.BJT_GAIN, nvBJT_GAIN.getValueToHuman(), nvBJT_GAIN));
+        this.KS.insert(insertNewPreference(Preference.ENABLE_GUIDED_MODE));
     }
 
     /**
@@ -152,7 +122,6 @@ public class ConsoleApp implements iRepository{
     public Hypothesis chooseNewHypothesis() {
         Collection<Hypothesis> hypothesis = (Collection<Hypothesis>) this.KS.getObjects(new ClassObjectFilter(Hypothesis.class));
 
-        String newHypothesis = "";
 
         Map<String, String> hypothesisList = new HashMap<>();
         hypothesisList.put(Hypothesis.ZONE_ACTIVE, Hypothesis.ZONE_ACTIVE);
@@ -164,15 +133,7 @@ public class ConsoleApp implements iRepository{
             hypothesisList.remove(hyp);
         }
 
-        while (newHypothesis.isEmpty()){
-            for(String s : hypothesisList.values()){
-                String question = "Test hypothesis '" + Hypothesis.ZONE + " = " + s + "' (yes/no)";
-                if (readYesOrNoFromConsole(question).equals("YES")){
-                    newHypothesis = s;
-                    break;
-                }
-            }
-        }
+        String newHypothesis = String.valueOf(readFromJOPWithList("Select one Hypothesis", hypothesisList.values().toArray(), 0));
 
         return new Hypothesis(Hypothesis.ZONE, newHypothesis);
     }
@@ -185,11 +146,10 @@ public class ConsoleApp implements iRepository{
     public NumericEvidence insertNewNumericEvidence(NumericAlternative ev){
         NumericEvidence numericEvidence;
 
-        NumericValue nv = readNumericValueFromConsole(ev.getLabel(), ev.getUnit());
+        NumericValue nv = readNumericValueFromJOP(ev.getLabel(), ev.getUnit());
         numericEvidence = new NumericEvidence(ev, nv.getValueToHuman(), nv);
 
-        System.out.println(numericEvidence.toString());
-        System.out.println(this.breakOutLine);
+        logger.info("{}",numericEvidence.toString());
 
         return numericEvidence;
     }
@@ -202,11 +162,10 @@ public class ConsoleApp implements iRepository{
     @Override
     public Preference insertNewPreference(Alternative pref){
 
-        String value = (pref.isYesOrNo()) ? readYesOrNoFromConsole(pref.getLabel()) : readFromConsole(pref.getLabel());
+        String value = (pref.isYesOrNo()) ? readYesOrNoFromJOP(pref.getLabel()) : readFromJOP(pref.getLabel());
         Preference preference = new Preference(pref, value);
 
-        System.out.println(preference.toString());
-        System.out.println(this.breakOutLine);
+        logger.info("{}",preference.toString());
 
         return preference;
     }
@@ -218,7 +177,7 @@ public class ConsoleApp implements iRepository{
 
     @Override
     public void printMessage(String message) {
-        System.out.println(message);
+        JOptionPane.showMessageDialog(null, message, windowTitle, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -227,10 +186,10 @@ public class ConsoleApp implements iRepository{
      * @param unit unit of measurement of this numeric value. If none, send null
      * @return NumericValue object
      */
-    private NumericValue readNumericValueFromConsole(String message, Units unit){
+    private NumericValue readNumericValueFromJOP(String message, Units unit){
 
-        BigDecimal value = readDoubleFromConsole(message);
-        Multiplier multiplier = readMultiplierFromFromConsole();
+        BigDecimal value = readDoubleFromJOP(message);
+        Multiplier multiplier = readMultiplierFromFromJOP();
 
         NumericValue nv = (unit == null)
                             ? new NumericValue(value, multiplier)
@@ -244,18 +203,18 @@ public class ConsoleApp implements iRepository{
      * @param message message to be presented to the user
      * @return number in double format
      */
-    private BigDecimal readDoubleFromConsole(String message){
+    private BigDecimal readDoubleFromJOP(String message){
         boolean keepLoop = true;
         BigDecimal value = new BigDecimal("0");
         String valueStr = "";
 
         while (keepLoop){
             try {
-                valueStr = readFromConsole(message);
+                valueStr = readFromJOP(message);
                 value = new BigDecimal(valueStr);
                 keepLoop = false;
             } catch (NumberFormatException e){
-                System.out.println("Invalid value!! Please insert a valid number");
+                printMessage("Invalid value!! Please insert a valid number");
             }
         }
 
@@ -266,41 +225,11 @@ public class ConsoleApp implements iRepository{
      * Shows a list of multipliers on console and asks user to select one
      * @return multiplier object equivalent to the multiplier user choose
      */
-    private Multiplier readMultiplierFromFromConsole(){
-        boolean keepLoop = true;
-        int searchId = -1;
-        String value = "";
-        Multiplier multiplier = fundamentalUnitMultiplier;
+    private Multiplier readMultiplierFromFromJOP(){
+        Multiplier multiplier = null;
+        String msg = "Select one element from bellow list";
 
-        System.out.println("Select one element from bellow list");
-        System.out.println(this.listOfMultipliersStr);
-        System.out.println("You can insert either the name or the symbol");
-        System.out.println("If you dont what to send a multiplier, send it blank");
-        while (keepLoop){
-            value = readFromConsole("");
-
-            //Sends an empty value
-            if(value.equals("")){
-                keepLoop = false;
-                break;
-            }
-
-            //Search for the chosen multiplier
-            for(Multiplier m : listOfMultipliers){
-                searchId++;
-                if(m.getPrefix().equalsIgnoreCase(value) || m.getSymbol().equals(value)){
-                    multiplier = listOfMultipliers.get(searchId);
-                    keepLoop = false;
-                    break;
-                }
-            }
-
-            //Validates if an error happen
-            if (keepLoop){
-                searchId = -1;
-                System.out.println("Invalid option. Please make sure you type one element from the list");
-            }
-        }
+        multiplier = (Multiplier) readFromJOPWithList(msg, listOfMultipliers.toArray(), 0);
 
         return multiplier;
     }
@@ -310,9 +239,10 @@ public class ConsoleApp implements iRepository{
      * @param message message to be presented to the user
      * @return YES or NO strings
      */
-    private String readYesOrNoFromConsole(String message){
-        String input = readFromConsole(message).toUpperCase();
-        return (input.equals("NO") || input.equals("YES")) ? input : "NO";
+    private String readYesOrNoFromJOP(String message){
+        int input = JOptionPane.showConfirmDialog(null,message,windowTitle,JOptionPane.YES_NO_OPTION);
+
+        return (input == JOptionPane.YES_OPTION ? "YES" : "NO");
     }
 
     /**
@@ -320,35 +250,38 @@ public class ConsoleApp implements iRepository{
      * @param message message to be presented to the user
      * @return User typed response
      */
-    private String readFromConsole(String message){
-        String input = "";
+    private String readFromJOP(String message){
+        String input = JOptionPane.showInputDialog(null,message,windowTitle,JOptionPane.QUESTION_MESSAGE);
 
-        System.out.print(message + ": ");
-
-        try {
-            input = br.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         return input;
     }
 
     /**
-     * Process listOfMultipliers object to generate the string to be used on readMultiplierFromFromConsole() and store the object for the Fundamental Unit
-     * @return string to be used on readMultiplierFromFromConsole()
+     * Shows a message and reads a String from console
+     * @param message message to be presented to the user
+     * @return User typed response
      */
-    private String processListOfMultipliers(){
-        String multipliersList = "";
-        boolean isBeginningOfString = true;
-        for(Multiplier m : this.listOfMultipliers){
-            if(m.getBase10Power().compareTo(new BigDecimal("1")) != 0){
-                multipliersList += (isBeginningOfString ? "    " : ", ") + m.getPrefix() + " ("+ m.getSymbol() +")";
-                isBeginningOfString = false;
-            } else {
-                this.fundamentalUnitMultiplier = m;
-            }
-        }
+    private Object readFromJOPWithList(String message, Object[] list, int defaultID){
+        Object input = JOptionPane.showInputDialog(null,message,windowTitle,JOptionPane.QUESTION_MESSAGE, null, list, list[defaultID]);
 
-        return multipliersList;
+        return input;
     }
+
+
+
+    /**
+     * Shows a message and reads a String from console
+     * @param message message to be presented to the user
+     * @return User typed response
+     */
+    private Object readFromJOPWithListButtons(String message, Object[] list, int defaultID){
+        Object input = JOptionPane.showOptionDialog(null, message, windowTitle,
+                list.length == 2 ? JOptionPane.YES_NO_OPTION : JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                list,
+                list[defaultID]);
+        return input;
+    }
+
 }

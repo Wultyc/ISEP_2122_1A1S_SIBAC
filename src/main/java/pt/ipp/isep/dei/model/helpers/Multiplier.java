@@ -44,17 +44,21 @@ public class Multiplier {
         this.base10Power = base10Power;
     }
 
+    public String toString(){
+        return description + (symbol.isEmpty() ? "" : " (" + symbol + ") ");
+    }
+
     public static List<Multiplier> getDefaultListOfMultipliers(){
 
         ArrayList<Multiplier> lm = new ArrayList<Multiplier>();
 
-        lm.add(new Multiplier("giga", "giga","G", new BigDecimal(1000000000)));
-        lm.add(new Multiplier("mega", "mega","M", new BigDecimal(1000000)));
-        lm.add(new Multiplier("kilo", "kilo","k", new BigDecimal(1000)));
         lm.add(new Multiplier("Fundamental Unit", "","", new BigDecimal(1)));
-        lm.add(new Multiplier("milli", "milli","m", new BigDecimal(0.001)));
-        lm.add(new Multiplier("micro", "micro","µ", new BigDecimal(0.000001)));
-        lm.add(new Multiplier("nano", "nano","n", new BigDecimal(0.000000001)));
+        lm.add(new Multiplier("Giga", "giga","G", new BigDecimal(1000000000)));
+        lm.add(new Multiplier("Mega", "mega","M", new BigDecimal(1000000)));
+        lm.add(new Multiplier("Kilo", "kilo","k", new BigDecimal(1000)));
+        lm.add(new Multiplier("Milli", "milli","m", new BigDecimal(0.001)));
+        lm.add(new Multiplier("Micro", "micro","µ", new BigDecimal(0.000001)));
+        lm.add(new Multiplier("Nano", "nano","n", new BigDecimal(0.000000001)));
 
         return lm;
     }

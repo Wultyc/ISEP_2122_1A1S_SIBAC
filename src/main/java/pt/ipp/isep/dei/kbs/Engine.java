@@ -11,6 +11,7 @@ import pt.ipp.isep.dei.Main;
 import pt.ipp.isep.dei.kbs.bjt.BTJStatus;
 import pt.ipp.isep.dei.model.Justification;
 import pt.ipp.isep.dei.repository.ConsoleApp;
+import pt.ipp.isep.dei.repository.JOPApp;
 import pt.ipp.isep.dei.repository.iRepository;
 
 import java.util.Map;
@@ -44,7 +45,7 @@ public class Engine {
         this.query = this.KS.openLiveQuery("Conclusions", null, listener);
 
         //Load repository
-        this.repository = new ConsoleApp();
+        this.repository = new JOPApp();
         this.repository.init(this.KS, this.agendaEventListener);
 
         //Load BTJStatus
