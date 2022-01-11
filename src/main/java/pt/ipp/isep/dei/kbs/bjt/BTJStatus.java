@@ -207,7 +207,6 @@ public class BTJStatus {
 
     public void chooseNewHypothesis(){
         Hypothesis newHypothesis = this.repository.chooseNewHypothesis();
-        newHypothesis.setHypothesisPhase(HypothesisPhase.In_Test);
         logger.info("User selected Hypothesis {}:{}",newHypothesis.getDescription(), newHypothesis.getValue());
         this.KS.insert(newHypothesis);
     }

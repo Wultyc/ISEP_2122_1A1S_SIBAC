@@ -142,7 +142,7 @@ public class JOPApp implements Adapter {
 
         int position = Integer.parseInt(String.valueOf(readFromJOPWithListButtons("Select one Hypothesis", hypothesisList.toArray(), 0)));
 
-        return new Hypothesis(Hypothesis.ZONE, hypothesisList.get(position));
+        return new Hypothesis(Hypothesis.ZONE, hypothesisList.get(position), HypothesisPhase.In_Test);
     }
 
     /**
