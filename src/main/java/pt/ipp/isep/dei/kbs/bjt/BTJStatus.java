@@ -195,12 +195,6 @@ public class BTJStatus {
         return count < 3;
     }
 
-    public boolean hasMoreHypothesisToTest(String s){
-        int count = countNrFacts(Hypothesis.class);
-        logger.info("Where tested already {} Hypothesis, {}",count,s);
-        return count < 3;
-    }
-
     public int countNrFacts(Class<?> factType){
         return this.KS.getObjects(new ClassObjectFilter(factType)).size();
     }
