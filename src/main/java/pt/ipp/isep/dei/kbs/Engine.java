@@ -7,12 +7,10 @@ import org.kie.api.runtime.rule.LiveQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pt.ipp.isep.dei.Main;
 import pt.ipp.isep.dei.kbs.bjt.BTJStatus;
 import pt.ipp.isep.dei.model.Justification;
-import pt.ipp.isep.dei.repository.ConsoleApp;
-import pt.ipp.isep.dei.repository.JOPApp;
-import pt.ipp.isep.dei.repository.iRepository;
+import pt.ipp.isep.dei.adapters.JOPApp;
+import pt.ipp.isep.dei.adapters.Adapter;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -22,7 +20,7 @@ public class Engine {
     private LiveQuery query;
     private TrackingAgendaEventListener agendaEventListener;
     private Map<Integer, Justification> justifications;
-    private iRepository repository;
+    private Adapter adapter;
     private BTJStatus btjStatus;
 
     private static Logger logger = LoggerFactory.getLogger(Engine.class);
@@ -40,16 +38,16 @@ public class Engine {
         this.agendaEventListener = new TrackingAgendaEventListener(this.justifications);
         this.KS.addEventListener(this.agendaEventListener);
 
+        //Load adapter
+        this.adapter = new JOPApp();
+        this.adapter.init(this.KS, this.agendaEventListener);
+
         //Create Justification Listener instance
-        JustificationListner listener = new JustificationListner(this.KS, this.justifications);
+        JustificationListner listener = new JustificationListner(this.KS, this.justifications, this.adapter);
         this.query = this.KS.openLiveQuery("Conclusions", null, listener);
 
-        //Load repository
-        this.repository = new JOPApp();
-        this.repository.init(this.KS, this.agendaEventListener);
-
         //Load BTJStatus
-        this.btjStatus = new BTJStatus(this.KS, this.agendaEventListener, this.repository);
+        this.btjStatus = new BTJStatus(this.KS, this.agendaEventListener, this.adapter);
 
         logger.info("KBS Engine ready");
     }
@@ -69,13 +67,13 @@ public class Engine {
 
         //Close the application
         this.query.close();
-        this.repository.close();
+        this.adapter.close();
 
         logger.info("KBS Engine closing");
     }
 
     private void loadWorkMemory(){
-        this.repository.loadWorkMemory();
+        this.adapter.loadWorkMemory();
     }
 
     public KieSession getKS() {
@@ -90,7 +88,7 @@ public class Engine {
         return justifications;
     }
 
-    public iRepository getRepository() {
-        return repository;
+    public Adapter getAdapter() {
+        return adapter;
     }
 }

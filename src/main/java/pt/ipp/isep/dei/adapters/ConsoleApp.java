@@ -1,4 +1,4 @@
-package pt.ipp.isep.dei.repository;
+package pt.ipp.isep.dei.adapters;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,11 +9,13 @@ import java.util.*;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.ipp.isep.dei.kbs.TrackingAgendaEventListener;
 import pt.ipp.isep.dei.model.*;
 import pt.ipp.isep.dei.model.helpers.*;
 
-public class ConsoleApp implements iRepository{
+public class ConsoleApp implements Adapter {
 
     private KieSession KS;
     private TrackingAgendaEventListener agendaEventListener;
@@ -24,6 +26,8 @@ public class ConsoleApp implements iRepository{
     private String listOfMultipliersStr;
 
     private final String breakOutLine;
+
+    private static Logger logger = LoggerFactory.getLogger(JOPApp.class);
 
     public ConsoleApp(){
         this.breakOutLine = new String(new char[100]).replace("\0", "=");
@@ -94,6 +98,19 @@ public class ConsoleApp implements iRepository{
 
         //NumericValue nvBJT_GAIN = new NumericValue(new BigDecimal("150"), fu, null);
         //this.KS.insert(new NumericEvidence(NumericEvidence.BJT_GAIN, nvBJT_GAIN.getValueToHuman(), nvBJT_GAIN));
+    }
+
+    /**
+     * Prints the explanation to the console
+     * @param justifications justifications object
+     * @param factNumber ID of the conclusion fact
+     */
+    @Override
+    public void getHowExplanation(Map<Integer, Justification> justifications, Integer factNumber) {
+        logger.info("Start getting explanations from execution");
+        String explanation = (processExplanation(justifications, factNumber, 0));
+        logger.info("Explanations ready");
+        System.out.println(explanation);
     }
 
     /**
@@ -216,7 +233,6 @@ public class ConsoleApp implements iRepository{
         throw new Exception("Method not implemented");
     }
 
-    @Override
     public void printMessage(String message) {
         System.out.println(message);
     }
@@ -350,5 +366,54 @@ public class ConsoleApp implements iRepository{
         }
 
         return multipliersList;
+    }
+
+    /**
+     * Process the justification Map to retrieve the explanation
+     * @param justifications justification object
+     * @param factNumber fact id in analysis
+     * @param level indentation level
+     * @return justification of fact
+     */
+    private String processExplanation(Map<Integer, Justification> justifications, Integer factNumber, int level) {
+        StringBuilder sb = new StringBuilder();
+        Justification j = justifications.get(factNumber);
+        if (j != null) { // justification for Fact factNumber was found
+
+            logger.info("Getting justifications for {}",j.getRuleName());
+
+            sb.append(getIdentation(level));
+
+            //Write the conclusions
+            sb.append(j.getConclusion() + " was obtained by rule '" + j.getRuleName() + "' because");
+            sb.append('\n');
+
+            //Write the LHS memory details
+            int l = level + 1;
+            for (Fact f : j.getLhs()) {
+                sb.append(getIdentation(l));
+                sb.append("- " + f);
+                sb.append('\n');
+                if (f instanceof Hypothesis && f.getId() != factNumber) {
+                    String s = processExplanation(justifications, f.getId(), l + 1);
+                    sb.append(s);
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Add the indentation for the explanation
+     * @param level indentation level
+     * @return
+     */
+    private String getIdentation(int level) {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i < level; i++) {
+            sb.append('\t');
+        }
+        return sb.toString();
     }
 }

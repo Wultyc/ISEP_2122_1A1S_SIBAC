@@ -10,12 +10,8 @@ import pt.ipp.isep.dei.model.Conclusion;
 import pt.ipp.isep.dei.model.Evidence;
 import pt.ipp.isep.dei.model.NumericEvidence;
 import pt.ipp.isep.dei.model.Hypothesis;
-import pt.ipp.isep.dei.model.helpers.Multiplier;
-import pt.ipp.isep.dei.model.helpers.NumericAlternative;
-import pt.ipp.isep.dei.model.helpers.NumericValue;
-import pt.ipp.isep.dei.model.helpers.Status;
-import pt.ipp.isep.dei.repository.iRepository;
-import pt.ipp.isep.dei.Main;
+import pt.ipp.isep.dei.model.helpers.*;
+import pt.ipp.isep.dei.adapters.Adapter;
 
 import java.math.BigDecimal;
 
@@ -23,11 +19,11 @@ public class BTJStatus {
 
     private KieSession KS;
     private TrackingAgendaEventListener agendaEventListener;
-    private iRepository repository;
+    private Adapter repository;
 
     private static Logger logger = LoggerFactory.getLogger(BTJStatus.class);
 
-    public BTJStatus(KieSession KS, TrackingAgendaEventListener agendaEventListener, iRepository repository) {
+    public BTJStatus(KieSession KS, TrackingAgendaEventListener agendaEventListener, Adapter repository) {
         this.KS = KS;
         this.agendaEventListener = agendaEventListener;
         this.repository = repository;
@@ -55,6 +51,7 @@ public class BTJStatus {
             this.agendaEventListener.addLhs(VBE_ON);
         } else {
             this.KS.insert(new Evidence(Evidence.TBJ_IN_CUT_OVER_ZONE, "NO"));
+            h.setHypothesisPhase(HypothesisPhase.Rejected);
         }
 
         h.setStatus(Status.Inactive);
@@ -198,12 +195,19 @@ public class BTJStatus {
         return count < 3;
     }
 
+    public boolean hasMoreHypothesisToTest(String s){
+        int count = countNrFacts(Hypothesis.class);
+        logger.info("Where tested already {} Hypothesis, {}",count,s);
+        return count < 3;
+    }
+
     public int countNrFacts(Class<?> factType){
         return this.KS.getObjects(new ClassObjectFilter(factType)).size();
     }
 
     public void chooseNewHypothesis(){
         Hypothesis newHypothesis = this.repository.chooseNewHypothesis();
+        newHypothesis.setHypothesisPhase(HypothesisPhase.In_Test);
         logger.info("User selected Hypothesis {}:{}",newHypothesis.getDescription(), newHypothesis.getValue());
         this.KS.insert(newHypothesis);
     }

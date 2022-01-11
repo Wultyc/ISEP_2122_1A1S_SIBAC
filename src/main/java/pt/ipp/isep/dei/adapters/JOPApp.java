@@ -1,23 +1,18 @@
-package pt.ipp.isep.dei.repository;
+package pt.ipp.isep.dei.adapters;
 
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pt.ipp.isep.dei.kbs.TrackingAgendaEventListener;
-import pt.ipp.isep.dei.model.Hypothesis;
-import pt.ipp.isep.dei.model.NumericEvidence;
-import pt.ipp.isep.dei.model.Preference;
+import pt.ipp.isep.dei.model.*;
 import pt.ipp.isep.dei.model.helpers.*;
 
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.swing.JOptionPane;
+import java.util.*;
+import javax.swing.*;
 
-public class JOPApp implements iRepository{
+public class JOPApp implements Adapter {
 
     private KieSession KS;
     private TrackingAgendaEventListener agendaEventListener;
@@ -64,6 +59,19 @@ public class JOPApp implements iRepository{
 
         //Load preferences
         this.KS.insert(insertNewPreference(Preference.ENABLE_GUIDED_MODE));
+    }
+
+    /**
+     * Prints the explanation to the console
+     * @param justifications justifications object
+     * @param factNumber ID of the conclusion fact
+     */
+    @Override
+    public void getHowExplanation(Map<Integer, Justification> justifications, Integer factNumber) {
+        logger.info("Start getting explanations from execution");
+        String explanation = (processExplanation(justifications, factNumber, 0));
+        logger.info("Explanations ready");
+        printMessage(explanation);
     }
 
     /**
@@ -122,20 +130,19 @@ public class JOPApp implements iRepository{
     public Hypothesis chooseNewHypothesis() {
         Collection<Hypothesis> hypothesis = (Collection<Hypothesis>) this.KS.getObjects(new ClassObjectFilter(Hypothesis.class));
 
-
-        Map<String, String> hypothesisList = new HashMap<>();
-        hypothesisList.put(Hypothesis.ZONE_ACTIVE, Hypothesis.ZONE_ACTIVE);
-        hypothesisList.put(Hypothesis.ZONE_CUT_OVER, Hypothesis.ZONE_CUT_OVER);
-        hypothesisList.put(Hypothesis.ZONE_SATURATION, Hypothesis.ZONE_SATURATION);
+        ArrayList<String> hypothesisList = new ArrayList<>();
+        hypothesisList.add(Hypothesis.ZONE_ACTIVE);
+        hypothesisList.add(Hypothesis.ZONE_CUT_OVER);
+        hypothesisList.add(Hypothesis.ZONE_SATURATION);
 
         for(Hypothesis h : hypothesis){
             String hyp = h.getValue();
             hypothesisList.remove(hyp);
         }
 
-        String newHypothesis = String.valueOf(readFromJOPWithList("Select one Hypothesis", hypothesisList.values().toArray(), 0));
+        int position = Integer.parseInt(String.valueOf(readFromJOPWithListButtons("Select one Hypothesis", hypothesisList.toArray(), 0)));
 
-        return new Hypothesis(Hypothesis.ZONE, newHypothesis);
+        return new Hypothesis(Hypothesis.ZONE, hypothesisList.get(position));
     }
 
     /**
@@ -170,12 +177,15 @@ public class JOPApp implements iRepository{
         return preference;
     }
 
+    /**
+     * Shows a list of facts in memory
+     * @throws Exception method not implemented
+     */
     @Override
     public void listAllFacts() throws Exception {
         throw new Exception("Method not implemented");
     }
 
-    @Override
     public void printMessage(String message) {
         JOptionPane.showMessageDialog(null, message, windowTitle, JOptionPane.INFORMATION_MESSAGE);
     }
@@ -284,4 +294,56 @@ public class JOPApp implements iRepository{
         return input;
     }
 
+    /**
+     * Process the justification Map to retrieve the explanation
+     * @param justifications justification object
+     * @param factNumber fact id in analysis
+     * @param level indentation level
+     * @return justification of fact
+     */
+    @SuppressWarnings("DuplicatedCode")
+    private String processExplanation(Map<Integer, Justification> justifications, Integer factNumber, int level) {
+        StringBuilder sb = new StringBuilder();
+        Justification j = justifications.get(factNumber);
+        if (j != null) { // justification for Fact factNumber was found
+
+            logger.info("Getting justifications for {}",j.getRuleName());
+
+            sb.append(getIdentation(level));
+
+            //Write the conclusions
+            sb.append(j.getConclusion() + " was obtained by rule '" + j.getRuleName() + "' because");
+            sb.append('\n');
+
+            //Write the LHS memory details
+            int l = level + 1;
+            for (Fact f : j.getLhs()) {
+                sb.append(getIdentation(l));
+                sb.append("- " + f);
+                sb.append('\n');
+                if (f instanceof Hypothesis && f.getId() != factNumber) {
+                    String s = processExplanation(justifications, f.getId(), l + 1);
+                    sb.append(s);
+                }
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Add the indentation for the explanation
+     * @param level indentation level
+     * @return
+     */
+    private String getIdentation(int level) {
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i < level; i++) {
+            sb.append(' ');
+            sb.append(' ');
+            sb.append(' ');
+            sb.append(' ');
+        }
+        return sb.toString();
+    }
 }
