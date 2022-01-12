@@ -162,7 +162,7 @@ end
 rule "R10.3: Free mode and less than three hypothesis rejected"
 	when
 		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "NO")
-		eval(btjStatus.countNrFacts(Hypothesis.class) < 1)
+		eval(btjStatus.countNrFacts(Hypothesis.class) < 3)
 	then
 	    btjStatus.chooseNewHypothesis();
 end
@@ -173,7 +173,7 @@ end
 rule "R11: Free mode and three hypothesis rejected"
 	when
 		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "NO")
-		eval(!btjStatus.hasMoreHypothesisToTest())
+		eval(!btjStatus.hasMoreHypothesisToTest("R11"))
 	then
 	    Conclusion c = new Conclusion(Conclusion.ZONE_UNKNOWN);
         insert(c);

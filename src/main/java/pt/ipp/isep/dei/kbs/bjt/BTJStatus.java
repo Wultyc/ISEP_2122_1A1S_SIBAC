@@ -39,6 +39,7 @@ public class BTJStatus {
         //Check the uncertain zone
         if(Calculator.equal(VBB.getNormValue(), VBE_ON.getNormValue())){
             logger.info("The value for VBB is the same of VBE On. Is not possible to have a conclusion.");
+            this.agendaEventListener.addLhs(new Evidence(Evidence.ZONE_UNKNOWN_VALIDATION, "YES"));
             Conclusion c = new Conclusion(Conclusion.ZONE_CUT_OVER_VBB_EQUALS_VBE_ON);
             this.KS.insert(c);
             return false;
@@ -49,6 +50,7 @@ public class BTJStatus {
         if(validation) {
             this.agendaEventListener.addLhs(VBB);
             this.agendaEventListener.addLhs(VBE_ON);
+            this.agendaEventListener.addLhs(new Evidence(Evidence.CUT_OFF_ZONE_VALIDATION, "YES"));
         } else {
             this.KS.insert(new Evidence(Evidence.TBJ_IN_CUT_OVER_ZONE, "NO"));
             h.setHypothesisPhase(HypothesisPhase.Rejected);
@@ -189,9 +191,9 @@ public class BTJStatus {
         return validation;
     }
 
-    public boolean hasMoreHypothesisToTest(){
+    public boolean hasMoreHypothesisToTest(String s){
         int count = countNrFacts(Hypothesis.class);
-        logger.info("Where tested already {} Hypothesis",count);
+        logger.info("Where tested already {} Hypothesis {}",count, s);
         return count < 3;
     }
 
