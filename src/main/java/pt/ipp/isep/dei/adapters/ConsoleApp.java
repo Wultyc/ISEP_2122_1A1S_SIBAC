@@ -72,32 +72,6 @@ public class ConsoleApp implements Adapter {
 
         //Load preferences
         this.KS.insert(retrievePreference(Preference.ENABLE_GUIDED_MODE));
-
-        //TODO
-        // - Use this code for Unit Testing Active Zone
-
-        //Multipliers
-        //Multiplier fu = new Multiplier();
-        //Multiplier k = new Multiplier("k", "k", "k", new BigDecimal("1000"));
-
-        //////Load values from problem
-        //NumericValue nvRC = new NumericValue(new BigDecimal("5"), k, Units.Ω);
-        //this.KS.insert(new NumericEvidence(NumericEvidence.RC, nvRC.getValueToHuman(), nvRC));
-
-        //NumericValue nvRE = new NumericValue(new BigDecimal("1"), k, Units.Ω);
-        //this.KS.insert(new NumericEvidence(NumericEvidence.RE, nvRE.getValueToHuman(), nvRE));
-
-        //NumericValue nvRBB = new NumericValue(new BigDecimal("1.8"), k, Units.Ω);
-        //this.KS.insert(new NumericEvidence(NumericEvidence.RBB, nvRBB.getValueToHuman(), nvRBB));
-
-        //NumericValue nvVBB = new NumericValue(new BigDecimal("2.7"), fu, Units.V);
-        //this.KS.insert(new NumericEvidence(NumericEvidence.VBB, nvVBB.getValueToHuman(), nvVBB));
-
-        //NumericValue nvVCC = new NumericValue(new BigDecimal("15"), fu, Units.V);
-        //this.KS.insert(new NumericEvidence(NumericEvidence.VCC,nvVCC.getValueToHuman(), nvVCC ));
-
-        //NumericValue nvBJT_GAIN = new NumericValue(new BigDecimal("150"), fu, null);
-        //this.KS.insert(new NumericEvidence(NumericEvidence.BJT_GAIN, nvBJT_GAIN.getValueToHuman(), nvBJT_GAIN));
     }
 
     /**

@@ -173,7 +173,7 @@ end
 rule "R11: Free mode and three hypothesis rejected"
 	when
 		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "NO")
-		eval(!btjStatus.hasMoreHypothesisToTest("R11"))
+		eval(!btjStatus.hasMoreHypothesisToTest())
 	then
 	    Conclusion c = new Conclusion(Conclusion.ZONE_UNKNOWN);
         insert(c);

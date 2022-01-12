@@ -191,9 +191,9 @@ public class BTJStatus {
         return validation;
     }
 
-    public boolean hasMoreHypothesisToTest(String s){
+    public boolean hasMoreHypothesisToTest(){
         int count = countNrFacts(Hypothesis.class);
-        logger.info("Where tested already {} Hypothesis {}",count, s);
+        logger.info("Where tested already {} Hypothesis {}",count);
         return count < 3;
     }
 
