@@ -113,6 +113,8 @@ public class BTJStatus {
                 return false;
             }
 
+            this.agendaEventListener.addLhs(new Evidence(Evidence.ACTIVE_ZONE_VALIDATION, "YES"));
+
         } else {
             this.KS.insert(new Evidence(Evidence.TBJ_IN_ACTIVE_ZONE, "NO"));
         }
