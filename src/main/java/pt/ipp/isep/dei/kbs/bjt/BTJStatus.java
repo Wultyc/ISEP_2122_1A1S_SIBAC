@@ -29,7 +29,7 @@ public class BTJStatus {
         this.repository = repository;
     }
 
-    public boolean testCutOverZone(Hypothesis h){
+    public boolean testCutOffZone(Hypothesis h){
 
         logger.info("Starting testing Cut Over Zone");
 
@@ -40,7 +40,7 @@ public class BTJStatus {
         if(Calculator.equal(VBB.getNormValue(), VBE_ON.getNormValue())){
             logger.info("The value for VBB is the same of VBE On. Is not possible to have a conclusion.");
             this.agendaEventListener.addLhs(new Evidence(Evidence.ZONE_UNKNOWN_VALIDATION, "YES"));
-            Conclusion c = new Conclusion(Conclusion.ZONE_CUT_OVER_VBB_EQUALS_VBE_ON);
+            Conclusion c = new Conclusion(Conclusion.ZONE_CUT_OFF_VBB_EQUALS_VBE_ON);
             this.KS.insert(c);
             return false;
         }

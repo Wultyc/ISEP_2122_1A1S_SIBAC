@@ -4,7 +4,7 @@ import pt.ipp.isep.dei.model.helpers.Alternative;
 
 public class Evidence extends Fact{
 
-    public static final String TBJ_IN_CUT_OVER_ZONE = "BTJ is in Cut-Over Zone";
+    public static final String TBJ_IN_CUT_OVER_ZONE = "BTJ is in Cut-Off Zone";
     public static final String TBJ_IN_ACTIVE_ZONE = "BTJ is in Active Zone";
     public static final String TBJ_IN_SATURATION_ZONE = "BTJ is in Saturation Zone";
     public static final String ZONE_UNKNOWN_VALIDATION = "VBB value is equal to VBE On. Need to test the physical component";

@@ -35,25 +35,25 @@ query "evidence"(String ev, String v)
 end
 
 /**
- * Test hypothesis "in in cutover"
+ * Test hypothesis "in in cutoff"
  */
-rule "R1: Test hypothesis 'in in cutover'"
+rule "R1: Test hypothesis 'in in cutoff'"
 	when
-		$h : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, hypothesisPhase == HypothesisPhase.In_Test, status == Status.Active)
-		eval(btjStatus.testCutOverZone($h))
+		$h : Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OFF, hypothesisPhase == HypothesisPhase.In_Test, status == Status.Active)
+		eval(btjStatus.testCutOffZone($h))
 	then
-        Hypothesis h = new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER, HypothesisPhase.Accepted);
+        Hypothesis h = new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OFF, HypothesisPhase.Accepted);
         insert(h);
 end
 
 /**
- * Hypothesis "in in cutover" accepted
+ * Hypothesis "in in cutoff" accepted
  */
-rule "R2: Hypothesis 'in cutover' accepted"
+rule "R2: Hypothesis 'in cutoff' accepted"
 	when
-		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OVER, hypothesisPhase == HypothesisPhase.Accepted)
+		Hypothesis( description == Hypothesis.ZONE, value == Hypothesis.ZONE_CUT_OFF, hypothesisPhase == HypothesisPhase.Accepted)
 	then
-		Conclusion c = new Conclusion(Conclusion.ZONE_CUT_OVER);
+		Conclusion c = new Conclusion(Conclusion.ZONE_CUT_OFF);
         insert(c);
 end
 
@@ -111,15 +111,15 @@ rule "R7: Guided mode and no hypothesis"
 		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
 		eval(btjStatus.countNrFacts(Hypothesis.class) == 0)
 	then
-	    Hypothesis h = new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OVER);
+	    Hypothesis h = new Hypothesis(Hypothesis.ZONE, Hypothesis.ZONE_CUT_OFF);
 		h.setHypothesisPhase(HypothesisPhase.In_Test);
 		insert(h);
 end
 
 /**
- * Guided mode and hypothesis "in in cutover" rejected
+ * Guided mode and hypothesis "in in cutoff" rejected
  */
-rule "R8: Guided mode and hypothesis 'in in cutover' rejected"
+rule "R8: Guided mode and hypothesis 'in in cutoff' rejected"
 	when
 		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
 		Evidence( evidence == Evidence.TBJ_IN_CUT_OVER_ZONE, value == "NO")
@@ -130,9 +130,9 @@ rule "R8: Guided mode and hypothesis 'in in cutover' rejected"
 end
 
 /**
- * Guided mode and hypothesis "in in cutover" and hypothesis "in in active" rejected
+ * Guided mode and hypothesis "in in cutoff" and hypothesis "in in active" rejected
  */
-rule "R9: Guided mode and hypothesis 'in in cutover' and hypothesis 'in in active' rejected"
+rule "R9: Guided mode and hypothesis 'in in cutoff' and hypothesis 'in in active' rejected"
 	when
 		Preference( preference == Preference.ENABLE_GUIDED_MODE, value == "YES")
 		Evidence( evidence == Evidence.TBJ_IN_CUT_OVER_ZONE, value == "NO")

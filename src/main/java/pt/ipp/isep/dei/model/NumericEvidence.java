@@ -8,9 +8,9 @@ import pt.ipp.isep.dei.model.helpers.Units;
 import java.math.BigDecimal;
 
 public class NumericEvidence extends Fact{
-    public static final NumericAlternative RC = new NumericAlternative("Collector resistance (Rc)", true, Units.Ω);
-    public static final NumericAlternative RE = new NumericAlternative("Emitter resistance (Re)", true, Units.Ω);
-    public static final NumericAlternative RBB = new NumericAlternative("Base resistance (Rbb)", true, Units.Ω);
+    public static final NumericAlternative RC = new NumericAlternative("Collector resistor (Rc)", true, Units.Ω);
+    public static final NumericAlternative RE = new NumericAlternative("Emitter resistor (Re)", true, Units.Ω);
+    public static final NumericAlternative RBB = new NumericAlternative("Base resistor (Rbb)", true, Units.Ω);
     public static final NumericAlternative VCE = new NumericAlternative("Voltage between Collector and Emitter (Vce)", true, Units.V);
     public static final NumericAlternative VBE = new NumericAlternative("Voltage between Collector and Emitter (Vbe)", true, Units.V);
     public static final NumericAlternative VBB = new NumericAlternative("Voltage source from base circuit (Vbb)", true, Units.V);

@@ -147,7 +147,7 @@ public class ConsoleApp implements Adapter {
 
         Map<String, String> hypothesisList = new HashMap<>();
         hypothesisList.put(Hypothesis.ZONE_ACTIVE, Hypothesis.ZONE_ACTIVE);
-        hypothesisList.put(Hypothesis.ZONE_CUT_OVER, Hypothesis.ZONE_CUT_OVER);
+        hypothesisList.put(Hypothesis.ZONE_CUT_OFF, Hypothesis.ZONE_CUT_OFF);
         hypothesisList.put(Hypothesis.ZONE_SATURATION, Hypothesis.ZONE_SATURATION);
 
         for(Hypothesis h : hypothesis){

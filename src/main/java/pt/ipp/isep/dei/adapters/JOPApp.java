@@ -132,7 +132,7 @@ public class JOPApp implements Adapter {
 
         ArrayList<String> hypothesisList = new ArrayList<>();
         hypothesisList.add(Hypothesis.ZONE_ACTIVE);
-        hypothesisList.add(Hypothesis.ZONE_CUT_OVER);
+        hypothesisList.add(Hypothesis.ZONE_CUT_OFF);
         hypothesisList.add(Hypothesis.ZONE_SATURATION);
 
         for(Hypothesis h : hypothesis){
