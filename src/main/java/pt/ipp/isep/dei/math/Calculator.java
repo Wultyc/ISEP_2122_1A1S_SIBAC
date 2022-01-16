@@ -7,6 +7,11 @@ public class Calculator {
 
     public static final MathContext mc = MathContext.DECIMAL64;
 
+    public static final BigDecimal ONE = new BigDecimal("1");
+    public static final BigDecimal TEN = new BigDecimal("10");
+    public static final BigDecimal ONE_HUNDRED = new BigDecimal("100");
+    public static final BigDecimal ONE_THOUSAND = new BigDecimal("1000");
+
     public static boolean greaterThan(BigDecimal bd1, BigDecimal bd2){
         return bd1.compareTo(bd2) > 0;
     }
