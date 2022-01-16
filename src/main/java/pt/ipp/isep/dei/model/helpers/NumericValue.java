@@ -56,8 +56,9 @@ public class NumericValue {
     public void applyBestMultiplier(){
 
         BigDecimal realValue = this.value.multiply(this.multiplier.getBase10Power());
-        BigDecimal one = new BigDecimal("1");
-        BigDecimal ten = new BigDecimal("10");
+        BigDecimal one = Calculator.ONE;
+        BigDecimal oneThousand = Calculator.ONE_THOUSAND;
+        
 
         List<Multiplier> listOfMultipliers = Multiplier.getDefaultListOfMultipliers();
 
@@ -70,10 +71,9 @@ public class NumericValue {
             BigDecimal proposedValue = Calculator.fraction(realValue,m.getBase10Power());
 
             boolean lowerValueToComparison  = Calculator.greaterThanOrEqual(proposedValue, one);
-            boolean higherValueToComparison = Calculator.lowerThan(proposedValue, ten);
+            boolean higherValueToComparison = Calculator.lowerThan(proposedValue, oneThousand);
 
             if(lowerValueToComparison && higherValueToComparison){
-                System.out.println(m.getPrefix() + "(" + m.getSymbol() + ") chosen");
                 this.value = realValue.divide(m.getBase10Power(), Main.mc);
                 this.multiplier = m;
                 return;
